@@ -1,0 +1,407 @@
+{
+  "name": "Chatbot Personal",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        16
+      ],
+      "id": "<NODE_ID>",
+      "name": "Telegram Trigger",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"message\"][\"text\"]}}",
+                    "rightValue": "añadir",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "f4a39731-7a5b-4ea9-a240-b7922d328f54"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "añadir_tarea"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "33546aa3-c938-46ed-8367-d4cfcf95f082",
+                    "leftValue": "={{$json[\"message\"][\"text\"]}}",
+                    "rightValue": "ver",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ver_tareas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f77f2421-a470-449f-bb8a-c528379803a2",
+                    "leftValue": "={{$json[\"message\"][\"text\"]}}",
+                    "rightValue": "clima",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "clima"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "<NODE_ID>",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "additionalFields": {
+          "summary": "={{$json[\"message\"][\"text\"].replace(\"añadir\", \"\").trim()}}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        -176
+      ],
+      "id": "<NODE_ID>",
+      "name": "Crear evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<GOOGLE_CALENDAR_CREDENTIAL_ID>",
+          "name": "Google Calendar Memoria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "Evento creado correctamente en Google Calendar",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -176
+      ],
+      "id": "<NODE_ID>",
+      "name": "Evento creado",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "={{ $json[\"message\"] }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        848,
+        16
+      ],
+      "id": "<NODE_ID>",
+      "name": "Lista eventos",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        16
+      ],
+      "id": "<NODE_ID>",
+      "name": "Ver eventos",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<GOOGLE_CALENDAR_CREDENTIAL_ID>",
+          "name": "Google Calendar Memoria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json[\"message\"][\"text\"].split(\" \").slice(1).join(\" \") || \"Madrid,ES\" }}"
+            },
+            {
+              "name": "appid",
+              "value": "={{ $env.OPENWEATHERMAP_API_KEY }}"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "es"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        208
+      ],
+      "id": "<NODE_ID>",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventos = items.map(item => item.json);\n\nif (eventos.length === 0) {\n  return [{\n    json: {\n      message: \"📭 No tienes eventos próximos.\"\n    }\n  }];\n}\n\nlet texto = \"🗓️ <b>Tus próximos eventos:</b>\\n\\n\";\n\neventos.forEach(ev => {\n  const titulo = ev.summary || \"(Sin título)\";\n  const inicio = ev.start?.dateTime || ev.start?.date || \"Sin fecha\";\n  const fin = ev.end?.dateTime || ev.end?.date || \"Sin fecha\";\n  texto += `📌 <b>${titulo}</b>\\n🕒 ${inicio} → ${fin}\\n\\n`;\n});\n\nreturn [{\n  json: { message: texto }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        16
+      ],
+      "id": "<NODE_ID>",
+      "name": "Mensaje Formateado Eventos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json;\n\nif (!data || !data.weather) {\n  return [{\n    json: { message: \"⚠️ No pude obtener el clima. Verifica la ciudad.\" }\n  }];\n}\n\nconst ciudad = data.name;\nconst clima = data.weather[0].description;\nconst temp = data.main.temp;\nconst sensacion = data.main.feels_like;\nconst humedad = data.main.humidity;\n\nconst texto = `🌤️ <b>Clima en ${ciudad}</b>\\n` +\n              `🌡️ Temperatura: ${temp}°C (sensación ${sensacion}°C)\\n` +\n              `💧 Humedad: ${humedad}%\\n` +\n              `☁️ Cielo: ${clima}`;\n\nreturn [{\n  json: { message: texto }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        208
+      ],
+      "id": "<NODE_ID>",
+      "name": "Mensaje Formateado Clima"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "={{ $json[\"message\"] }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        848,
+        208
+      ],
+      "id": "<NODE_ID>",
+      "name": "Clima",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Crear evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ver eventos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear evento": {
+      "main": [
+        [
+          {
+            "node": "Evento creado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ver eventos": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Formateado Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Formateado Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Formateado Eventos": {
+      "main": [
+        [
+          {
+            "node": "Lista eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Formateado Clima": {
+      "main": [
+        [
+          {
+            "node": "Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<VERSION_ID>",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "<INSTANCE_ID>"
+  },
+  "id": "<FLOW_ID>",
+  "tags": []
+}
