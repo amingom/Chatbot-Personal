@@ -12,7 +12,7 @@ El bot está diseñado para gestionar eventos en **Google Calendar** y consultar
 
 A continuación se muestra el flujo principal actualmente implementado en **n8n**:
 
-<img width="2156" height="1106" alt="image" src="https://github.com/user-attachments/assets/9d892416-b57d-4f23-8ee7-8bdbc4ad4470" />
+<img width="2150" height="1098" alt="image" src="https://github.com/user-attachments/assets/98f32c75-2dbf-4072-bcdd-ce4c7187f773" />
 
 ---
 
