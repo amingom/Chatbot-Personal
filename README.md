@@ -12,7 +12,7 @@ El bot está diseñado para gestionar eventos en **Google Calendar** y consultar
 
 A continuación se muestra el flujo principal actualmente implementado en **n8n**:
 
-<img width="2048" height="1067" alt="image" src="https://github.com/user-attachments/assets/e7ef2070-4e62-43c3-93e1-7c878e2671af" />
+<img width="2156" height="1106" alt="image" src="https://github.com/user-attachments/assets/9d892416-b57d-4f23-8ee7-8bdbc4ad4470" />
 
 ---
 
@@ -66,6 +66,22 @@ El flujo se compone de los siguientes elementos y conexiones:
 ---
 
 ### 📋 Ejemplo de datos mostrados en Telegram
+
+**Evento creado en Google Calendar:**
+
+<img width="2476" height="1276" alt="image" src="https://github.com/user-attachments/assets/20d7e3f8-184a-4996-90e6-b08bf23f56e4" />
+
+**Lista de eventos en Google Calendar:**
+
+<img width="1960" height="1582" alt="image" src="https://github.com/user-attachments/assets/8c6795a8-6140-416d-b9f5-4113f18cba48" />
+
+**Google Calendar:**
+
+<img width="2354" height="1364" alt="image" src="https://github.com/user-attachments/assets/2c8e065e-5cb0-4bbc-b81b-ff296e7492a3" />
+
+**Muestra de datos del clima**
+
+<img width="1208" height="1584" alt="image" src="https://github.com/user-attachments/assets/a67de7f9-074a-465d-93b2-ea13bef8c0cb" />
 
 ---
 
