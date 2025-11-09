@@ -67,21 +67,17 @@ El flujo se compone de los siguientes elementos y conexiones:
 
 ### 📋 Ejemplo de datos mostrados en Telegram
 
-**Evento creado en Google Calendar:**
+#### 🗓️ Evento creado en Google Calendar
+<img src="https://github.com/user-attachments/assets/20d7e3f8-184a-4996-90e6-b08bf23f56e4" width="380" />
 
-<img width="2476" height="1276" alt="image" src="https://github.com/user-attachments/assets/20d7e3f8-184a-4996-90e6-b08bf23f56e4" />
+#### 📅 Lista de eventos
+<img src="https://github.com/user-attachments/assets/8c6795a8-6140-416d-b9f5-4113f18cba48" width="300" />
 
-**Lista de eventos en Google Calendar:**
+#### 🧭 Google Calendar
+<img src="https://github.com/user-attachments/assets/2c8e065e-5cb0-4bbc-b81b-ff296e7492a3" width="340" />
 
-<img width="1960" height="1582" alt="image" src="https://github.com/user-attachments/assets/8c6795a8-6140-416d-b9f5-4113f18cba48" />
-
-**Google Calendar:**
-
-<img width="2354" height="1364" alt="image" src="https://github.com/user-attachments/assets/2c8e065e-5cb0-4bbc-b81b-ff296e7492a3" />
-
-**Muestra de datos del clima**
-
-<img width="1208" height="1584" alt="image" src="https://github.com/user-attachments/assets/a67de7f9-074a-465d-93b2-ea13bef8c0cb" />
+#### ☀️ Muestra de datos del clima
+<img src="https://github.com/user-attachments/assets/a67de7f9-074a-465d-93b2-ea13bef8c0cb" width="250" />
 
 ---
 
