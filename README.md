@@ -1,71 +1,82 @@
 # Chatbot Personal
 
-## 🧠 Chatbot Automatizado con n8n, Telegram y Google Calendar
+## 🧠 Chatbot Inteligente con n8n, Telegram, Google Calendar y Gemini AI
 
-Este proyecto consiste en el desarrollo de un **chatbot automatizado** implementado en **n8n**, que permite interactuar con el usuario a través de **Telegram**.  
+Este proyecto consiste en el desarrollo de un **chatbot automatizado**, utilizando **Inteligencia Artificial (Google Gemini)** para comprender el lenguaje natural. Está implementado en **n8n**, permitiendo interactuar con el usuario a través de **Telegram** de una forma mucho más fluida y humana.
 
-El bot está diseñado para gestionar eventos en **Google Calendar** y consultar información meteorológica mediante la **API de OpenWeather**.
+El bot gestiona eventos en **Google Calendar** (crear, ver, modificar y eliminar) y consulta información meteorológica mediante la **API de OpenWeather**, interpretando las peticiones del usuario.
 
 ---
 
 ### 🧩 Flujo actual del proyecto
 
-A continuación se muestra el flujo principal actualmente implementado en **n8n**:
-
 <img width="1846" height="1160" alt="image" src="https://github.com/user-attachments/assets/b8983fda-e1a1-423e-8cbc-567d9b0d07d5" />
 
 ---
 
-El flujo se compone de los siguientes elementos y conexiones:
+El flujo se compone de los siguientes elementos clave:
 
 1. **Telegram Trigger**  
-   El flujo comienza cuando el bot recibe un mensaje del usuario en Telegram. Este mensaje actúa para iniciar la ejecución del proceso.
+   Recibe cualquier mensaje de texto del usuario.
 
-2. **Switch**  
-   Este nodo analiza el contenido del mensaje y redirige la ejecución según el comando introducido por el usuario:  
-   - `/añadir_tarea`: crea un nuevo evento en Google Calendar.  
-   - `/ver_tareas`: muestra la lista de eventos pendientes en el calendario.  
-   - `/clima`: consulta la información meteorológica actual de una ciudad específica.  
+2. **Clasificador con IA (Google Gemini)**  
+   Un modelo de lenguaje analiza el mensaje y determina la intención del usuario entre:
+   - **Crear**: Agendar nuevos eventos.
+   - **Ver**: Consultar la agenda.
+   - **Eliminar**: Borrar eventos existentes.
+   - **Modificar**: Cambiar detalles de un evento.
+   - **Clima**: Consultar el tiempo.
 
-3. **Integración con Google Calendar**  
-   - **Crear evento:** añade una nueva tarea en el calendario configurado.  
-   - **Ver eventos:** obtiene y lista todos los eventos próximos del calendario.  
+3. **Procesamiento Inteligente (Nodos IA)**  
+   Dependiendo de la intención, otros modelos de IA extraen los datos necesarios:
+   - *Fechas y horas*.
+   - *Resúmenes y descripciones*.
+   - *Ciudades* para el clima.
 
-4. **Consulta del clima (HTTP Request)**  
-   A través de una petición a la **API de OpenWeather**, el bot recupera los datos meteorológicos de la ciudad indicada por el usuario, en caso de que no se especifique, de manera predeterminada se mostrará el clima de Madrid.
-   
-   Los parámetros de la solicitud incluyen el nombre de la ciudad, la clave de API y las unidades de medida.  
+4. **Integración con Google Calendar**  
+   - **Crear evento:** Añade tareas con título, fecha, hora y recordatorios.
+   - **Ver eventos:** Busca eventos en rangos de tiempo.
+   - **Eliminar evento:** Busca y elimina eventos por nombre.
+   - **Modificar evento:** Permite cambiar hora, fecha o título de eventos existentes.
 
-6. **Mensajes formateados y respuesta a Telegram**  
-   Cada acción del bot genera un mensaje de respuesta estructurado, usando HTML, que se envía de vuelta al chat de Telegram.  
-   Por último, el usuario recibe información sobre el evento creado, la lista de tareas o las condiciones climáticas actuales.  
+5. **Consulta del clima**  
+   Detecta automáticamente la ciudad mencionada o muestra el clima de la ciudad por defecto, que es Madrid, y consulta la API de OpenWeather.
+
+6. **Respuestas Naturales**  
+   El bot confirma las acciones o responde a las consultas con mensajes formateados en Markdown/HTML.
 
 ---
 
 ### 🚀 Funcionalidades implementadas
 
-- Creación automática de eventos en Google Calendar.  
-- Visualización de los eventos próximos del calendario.  
-- Consulta del estado del clima mediante la API de OpenWeather.  
-- Comunicación interactiva con el usuario a través de Telegram.  
+- **Procesamiento de Lenguaje Natural (NLP):** Entiende frases como "Cena con Paco el viernes a las 9" sin usar comandos como `/crear`.
+- **Gestión Completa de Calendario:**
+  - Creación inteligente de eventos.
+  - Consulta de agenda.
+  - Modificación de eventos existentes.
+  - Eliminación de eventos.
+- **Consulta Meteorológica Inteligente:** Detecta la ciudad dentro de la frase.
+- **Interacción Fluida:** Respuestas contextuales y manejo de errores.
 
 ---
 
 ### 🛠️ Tecnologías utilizadas
 
-- [**n8n**][n8nurl] – herramienta de automatización sin código.
-- [**Telegram Bot**][telegramboturl] – comunicación con el usuario.
-- [**Google Calendar API**][googlecalendarurl] – gestión de eventos. 
-- [**OpenWeather API**][openweatherurl] – consulta de datos meteorológicos.
+- [**n8n**][n8nurl] – Orquestador de flujos de trabajo.
+- [**Google Gemini API**][geminiurl] – Motor de Inteligencia Artificial para comprensión del lenguaje.
+- [**Telegram Bot**][telegramboturl] – Interfaz de usuario.
+- [**Google Calendar API**][googlecalendarurl] – Gestión de agenda. 
+- [**OpenWeather API**][openweatherurl] – Datos meteorológicos.
 
 [n8nurl]: https://n8n.io/
+[geminiurl]: https://aistudio.google.com/
 [telegramboturl]: https://core.telegram.org/bots
 [googlecalendarurl]: https://developers.google.com/workspace/calendar/api/guides/overview?hl=es_419
 [openweatherurl]: https://openweathermap.org/api
 
 ---
 
-### 📋 Ejemplo de datos mostrados en Telegram
+### 📋 Ejemplos de uso
 
 #### 🗓️ Evento creado en Google Calendar
 <img src="https://github.com/user-attachments/assets/20d7e3f8-184a-4996-90e6-b08bf23f56e4" width="380" />
@@ -80,4 +91,3 @@ El flujo se compone de los siguientes elementos y conexiones:
 <img src="https://github.com/user-attachments/assets/a67de7f9-074a-465d-93b2-ea13bef8c0cb" width="250" />
 
 ---
-
