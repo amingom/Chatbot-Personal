@@ -85,7 +85,7 @@ El flujo se compone de los siguientes elementos clave:
 <img src="./images/Ver_tareas.png" alt="Ver tareas" width="300">
 
 #### 🧭 Google Calendar
-<img src="https://github.com/user-attachments/assets/2c8e065e-5cb0-4bbc-b81b-ff296e7492a3" width="340" />
+<img src="./images/Calendario.png" alt="Ver tareas" width="500">
 
 #### ✏️ Modificar evento
 <img src="./images/Modificar_evento.png" alt="Modificar evento" width="300">
