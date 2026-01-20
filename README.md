@@ -79,7 +79,7 @@ El flujo se compone de los siguientes elementos clave:
 ### 📋 Ejemplos de uso
 
 #### 🗓️ Evento creado en Google Calendar
-<img src="https://github.com/user-attachments/assets/20d7e3f8-184a-4996-90e6-b08bf23f56e4" width="380" />
+<img src="./images/Añadir_tarea.png" alt="Añadir tarea" width="380">
 
 #### 📅 Lista de eventos
 <img src="https://github.com/user-attachments/assets/8c6795a8-6140-416d-b9f5-4113f18cba48" width="300" />
