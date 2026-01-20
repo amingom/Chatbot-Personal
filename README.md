@@ -1,4 +1,4 @@
-# Chatbot Personal
+# Chronos: Asistente personal inteligente
 
 ## 🧠 Chatbot Inteligente con n8n, Telegram, Google Calendar y Gemini AI
 
