@@ -85,12 +85,18 @@ El flujo se compone de los siguientes elementos clave:
 <img src="./images/Ver_tareas.png" alt="Ver tareas" width="300">
 
 #### 🧭 Google Calendar
-<img src="./images/Calendario.png" alt="Ver tareas" width="500">
+<img src="./images/Calendario.png" alt="Google Calendar" width="500">
 
 #### ✏️ Modificar evento
 <img src="./images/Modificar_evento.png" alt="Modificar evento" width="300">
 
+#### 🗑 Eliminar evento
+<img src="./images/Eliminar_evento.jpg" alt="Eliminar evento" width="300">
+
+#### 📋 Lista de eventos repetidos para eliminar
+<img src="./images/Lista_eventos_eliminar.jpg" alt="Lista eventos para eliminar" width="300">
+
 #### ☀️ Muestra de datos del clima
-<img src="https://github.com/user-attachments/assets/a67de7f9-074a-465d-93b2-ea13bef8c0cb" width="250" />
+<img src="./images/Clima.jpg" alt="Clima" width="300">
 
 ---
