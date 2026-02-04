@@ -10,7 +10,7 @@ El bot gestiona eventos en **Google Calendar** (crear, ver, modificar y eliminar
 
 ### 🧩 Flujo actual del proyecto
 
-<img width="1846" height="1160" alt="image" src="https://github.com/user-attachments/assets/b8983fda-e1a1-423e-8cbc-567d9b0d07d5" />
+<img src="./images/Flujo.png" alt="Google Calendar" width="1800">
 
 ---
 
