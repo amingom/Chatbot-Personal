@@ -85,7 +85,7 @@ El flujo se compone de los siguientes elementos clave:
 <img src="./images/Voz.jpg" alt="Mensaje de voz" width="300">
 
 #### 📝 Gestión de Google Tasks
-<img src="./images/Tareas.jpg" alt="Tareas" width="300">
+<img src="./images/Tarea.jpg" alt="Tarea" width="300">
 
 #### ☀️ Resumen Matutino Proactivo
 <img src="./images/Mensaje_matutino.jpg" alt="Mensaje matutino" width="300">
