@@ -92,4 +92,5 @@ El flujo se compone de los siguientes elementos clave:
 
 #### 🌍 Interacción Multilingüe
 <img src="./images/Mensaje_idioma.jpg" alt="Mensaje idioma" width="300">
+
 ---
