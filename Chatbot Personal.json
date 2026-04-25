@@ -1,168 +1,6 @@
 {
-  "name": "Chatbot Personal",
+  "name": "Prueba de Agente",
   "nodes": [
-    {
-      "parameters": {
-        "updates": [
-          "message"
-        ],
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        608,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "Telegram Trigger",
-      "webhookId": "<WEBHOOK_ID>",
-      "credentials": {
-        "telegramApi": {
-          "id": "<TELEGRAM_CREDENTIAL_ID>",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.text }}",
-                    "rightValue": "crear",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "f4a39731-7a5b-4ea9-a240-b7922d328f54"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "añadir_tarea"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "33546aa3-c938-46ed-8367-d4cfcf95f082",
-                    "leftValue": "={{ $json.text }}",
-                    "rightValue": "ver",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "ver_tareas"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "75d13628-9151-4225-a4ed-fd29b864f16c",
-                    "leftValue": "={{ $json.text }}",
-                    "rightValue": "eliminar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "eliminar_evento"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c290255c-c487-4a67-82d3-efa0f4a7ee35",
-                    "leftValue": "={{ $json.text }}",
-                    "rightValue": "modificar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "modificar_evento"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "f77f2421-a470-449f-bb8a-c528379803a2",
-                    "leftValue": "={{ $json.text }}",
-                    "rightValue": "clima",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "clima"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        1024,
-        -32
-      ],
-      "id": "<NODE_ID>",
-      "name": "Switch"
-    },
     {
       "parameters": {
         "calendar": {
@@ -191,29 +29,31 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1824,
-        -544
+        1680,
+        -576
       ],
       "id": "<NODE_ID>",
       "name": "Crear evento",
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
+          "name": "Google Calendar API"
         }
       }
     },
     {
       "parameters": {
         "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
-        "text": "=✅ *Evento creado con éxito*\n\n📌 Tarea: {{ $json.summary }}\n📅 Fecha: {{ $json.start.dateTime }}\n🔔 Aviso: {{ $('Datos Modelo Crear').first().json.reminder ? $('Datos Modelo Crear').first().json.reminder + ' min' : '15 min' }}\n🔗 Link: {{ $json.htmlLink }}",
-        "additionalFields": {}
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2000,
-        -544
+        2256,
+        -576
       ],
       "id": "<NODE_ID>",
       "name": "Evento creado",
@@ -228,16 +68,17 @@
     {
       "parameters": {
         "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
-        "text": "={{ $json.text }}",
+        "text": "={{ $json.output[0].content[0].text }}",
         "additionalFields": {
+          "appendAttribution": false,
           "parse_mode": "Markdown"
         }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2192,
-        -272
+        2256,
+        -176
       ],
       "id": "<NODE_ID>",
       "name": "Lista eventos",
@@ -266,8 +107,8 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1824,
-        -272
+        1680,
+        -176
       ],
       "id": "<NODE_ID>",
       "name": "Ver eventos",
@@ -275,9 +116,1487 @@
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
+          "name": "Google Calendar API"
         }
       }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2256,
+        1136
+      ],
+      "id": "<NODE_ID>",
+      "name": "Clima",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const textResponse = $input.first().json.text;\n\nconst firstBrace = textResponse.indexOf('{');\nconst lastBrace = textResponse.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = textResponse.substring(firstBrace, lastBrace + 1);\n\n    try {\n        const data = JSON.parse(jsonString);\n\n        return {\n            json: {\n                timeMin: data.timeMin,\n                timeMax: data.timeMax\n            }\n        };\n    } catch (e) {\n        return { json: {} };\n    }\n}\n\nreturn { json: {} };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -176
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos Modelo Eventos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\n\nconst fallbackCity = \"Madrid,ES\";\n\nfunction parseCity(str) {\n    const firstBrace = str.indexOf('{');\n    const lastBrace = str.lastIndexOf('}');\n\n    if (firstBrace !== -1 && lastBrace !== -1) {\n        const jsonString = str.substring(firstBrace, lastBrace + 1);\n        try {\n            const data = JSON.parse(jsonString);\n\n            return data.ciudad || fallbackCity;\n        } catch (e) {\n            console.log(\"Error al parsear JSON del clima\");\n        }\n    }\n    return fallbackCity;\n}\n\nconst ciudadDetectada = parseCity(text);\n\nreturn {\n    json: {\n        ciudad: ciudadDetectada\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        1136
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos Clima"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un experto meteorólogo con capacidad de comprensión en cualquier idioma.\nTu misión: Extraer el nombre de la ciudad que menciona el usuario, independientemente del idioma que use.\n\nReglas de extracción: 1. IDENTIFICACIÓN: Si el usuario menciona una ciudad en cualquier idioma (ej: \"Weather in London\", \"Météo à Rome\", \"Clima en Madrid\"), extrae el nombre de la ciudad.\n2. TRADUCCIÓN: Traduce el nombre de la ciudad al español o mantén el nombre internacional para asegurar la compatibilidad con la búsqueda (ej: \"London\" -> \"Londres\" o \"London\").\n3. OMISIÓN: Si el usuario NO menciona ninguna ciudad (ej: \"¿Va a llover?\", \"Is it going to rain?\"), asume por defecto: \"Madrid,ES\".\n\nResponde ÚNICAMENTE con este JSON:\n{   \n\"ciudad\": \"NombreCiudad\" \n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1104,
+        1040
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Clima"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un asistente técnico de calendario capaz de entender cualquier idioma.\nLa fecha y hora actual es: {{ $now }}\n\nTu misión: Extraer la intención de borrado del mensaje del usuario y devolver un JSON con los criterios de búsqueda.\n\nINSTRUCCIONES:\n\nIDIOMA: Analiza el mensaje sin importar el idioma (ej: \"Borrar la cena del viernes\", \"Delete Friday's dinner\", \"Supprimer le dîner de vendredi\").\n\nREGLA DE BÚSQUEDA (q):\n\nExtrae solo la palabra clave esencial del evento.\n\nSi el usuario dice \"Study session\", busca solo \"Study\".\n\nSi el usuario dice \"Cita con el dentista\", busca solo \"dentista\".\n\nIMPORTANTE: No incluyas palabras como \"sesión\", \"clase\", \"reunión\" o \"cita\" a menos que sean el nombre principal del evento. Queremos una búsqueda amplia para encontrar coincidencias parciales.\n\nTIEMPO: Si hay referencias temporales, calcula timeMin (inicio del día mencionado) y timeMax (fin de ese día o periodo). Si no hay referencia de tiempo, usa el momento actual como timeMin. Si el usuario no especifica una fecha concreta para borrar (ej: 'Borra Study for exams'), asume que la búsqueda debe hacerse desde ahora hasta dentro de 7 días para encontrar el evento.\n\nResponde SOLO con este JSON:\n{\n  \"q\": \"palabra_clave_en_idioma_original\",\n  \"timeMin\": \"YYYY-MM-DDTHH:mm:ss\",\n  \"timeMax\": \"YYYY-MM-DDTHH:mm:ss\"\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1104,
+        128
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Eliminar"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un experto calculador de fechas para consultar calendarios en cualquier idioma.\nLa fecha y hora actual es: {{ $now }}\n\nTu misión: Interpretar el periodo de tiempo que le interesa al usuario (independientemente del idioma que use) y devolver un JSON con el rango de fechas exacto.\n\nReglas de interpretación: \n1. IDIOMA: Entiende frases como \"¿Qué tengo hoy?\", \"What's on my schedule for tomorrow?\", \"Mes rendez-vous de la semaine\", etc.\n2. HOY / TODAY: Inicio = ahora, Fin = hoy a las 23:59:59.\n3. MAÑANA / TOMORROW: Inicio = mañana a las 00:00:00, Fin = mañana a las 23:59:59.\n4. ESTA SEMANA / THIS WEEK: Inicio = ahora, Fin = próximo domingo a las 23:59:59.\n5. SIN FECHA ESPECÍFICA: Si el usuario no indica cuándo (ej: \"¿Qué hay en la agenda?\"), asume las próximas 24 horas desde el momento actual.  \n\nResponde SOLO con este JSON: \n{   \n\"timeMin\": \"YYYY-MM-DDTHH:mm:ss\",   \n\"timeMax\": \"YYYY-MM-DDTHH:mm:ss\" \n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1104,
+        -272
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Mostrar Eventos"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "timeMin": "={{ $json.timeMin }}",
+        "timeMax": "={{ $json.timeMax }}",
+        "options": {
+          "query": "={{ $json.q }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1680,
+        240
+      ],
+      "id": "<NODE_ID>",
+      "name": "Ver eventos para eliminar",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Calendar API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "borrar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "<RULE_ID>"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "borrar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "nada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "avisar_nada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "preguntar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "preguntar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2256,
+        224
+      ],
+      "id": "<NODE_ID>",
+      "name": "Switch eliminar"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "eventId": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        96
+      ],
+      "id": "<NODE_ID>",
+      "name": "Eliminar Evento",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Calendar API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=### ROL:\nEres un experto gestor de calendario bilingüe y analítico.\nIMPORTANTE: La fecha y hora actual es: {{ $now }}\n\n### MISIÓN:\nIdentificar qué evento modificar y qué cambios aplicar.\n\n### REGLAS DE LÓGICA TEMPORAL (MUY IMPORTANTES):\n1. HORA SIN DÍA: Si el usuario indica una hora (ej: \"to 8pm\", \"a las 20:00\") pero NO menciona un día concreto:\n   - Responde en `newStart` ÚNICAMENTE con la hora en formato \"THH:mm:ss\" (ejemplo: \"T20:00:00\"). \n   - NO añadidas la fecha de hoy. Deja que el sistema use la fecha original del evento.\n2. REGLA DE DURACIÓN: Deja `newEnd` como null a menos que el usuario especifique una hora de fin.\n\n### REGLAS DE LENGUAJE:\n- BÚSQUEDA (q): Extrae la palabra clave (ej: \"Cumple David\").\n- ORIGEN (searchDate): Solo si menciona fecha específica del evento actual. Si no, null.\n- CONTENIDO: Mantén títulos y descripciones en el idioma original del usuario.\n\n### JSON DE SALIDA:\n{\n  \"q\": \"texto_original\",\n  \"searchDate\": \"YYYY-MM-DD\" o null,\n  \"newStart\": \"THH:mm:ss\" o \"YYYY-MM-DDTHH:mm:ss\",\n  \"newEnd\": null,\n  \"newSummary\": null,\n  \"newDescription\": null,\n  \"newReminder\": 30\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1104,
+        640
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Modificar Evento"
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventos = $input.all();\n\n// Caso 1: No hay eventos\nif (eventos.length === 0 || !eventos[0].json.id) {\n    return {\n        json: {\n            accion: \"nada\",\n            datos_ia: \"VACÍO\"\n        }\n    };\n}\n\n// Caso 2: Hay varios (Preparamos botones)\nif (eventos.length > 1) {\n  const botones = eventos.map(evento => {\n    const fecha = new Date(evento.json.start.dateTime || evento.json.start.date);\n    const fechaTxt = fecha.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });\n    \n    return [{\n      text: `${evento.json.summary} (${fechaTxt})`,\n      callback_data: evento.json.id\n    }];\n  });\n\n  return {\n    json: {\n      accion: \"preguntar\",\n      datos_ia: \"VARIOS\",\n      lista_eventos: eventos.map(e => e.json.summary).join(\", \"),\n      reply_markup: { inline_keyboard: botones }\n    }\n  };\n}\n\n// Caso 3: Solo hay uno\nconst evento = eventos[0].json;\nreturn {\n    json: {\n        accion: \"borrar\",\n        id: evento.id,\n        datos_ia: \"ÉXITO\",\n        titulo_borrado: evento.summary\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        240
+      ],
+      "id": "<NODE_ID>",
+      "name": "Mensaje Formateado Eliminar"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\n\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n\n        return {\n            json: {\n                q: data.q,\n                timeMin: data.timeMin || new Date().toISOString(), \n                timeMax: data.timeMax\n            }\n        };\n    } catch (e) {\n        return { json: { q: \"ERROR_NO_HAY_BUSQUEDA\" } };\n    }\n}\nreturn { json: { q: \"ERROR_NO_HAY_BUSQUEDA\" } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        240
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos Modelo Eliminar"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n\n        let tMin = undefined;\n        let tMax = undefined;\n\n        if (data.searchDate) {\n            tMin = `${data.searchDate}T00:00:00`;\n            tMax = `${data.searchDate}T23:59:59`;\n        }\n\n        return {\n            json: {\n                q: data.q || \"\",\n                searchTimeMin: tMin,\n                searchTimeMax: tMax,\n                newSummary: data.newSummary,\n                newDescription: data.newDescription,\n                newStart: data.newStart,\n                newEnd: data.newEnd,\n                newReminder: data.newReminder !== undefined ? data.newReminder : null\n            }\n        };\n    } catch (e) { return { json: { q: \"ERROR_JSON\" } }; }\n}\nreturn { json: { q: \"ERROR_NO_JSON\" } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        736
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos modificar evento"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "eventId": "={{ $json.id }}",
+        "useDefaultReminders": false,
+        "updateFields": {
+          "description": "={{ $json.updateDescription }}",
+          "end": "={{ $json.updateEnd }}",
+          "start": "={{ $json.updateStart }}",
+          "summary": "={{ $json.updateSummary }}"
+        },
+        "remindersUi": {
+          "remindersValues": [
+            {
+              "method": "popup",
+              "minutes": "={{ $json.updateReminder || 15 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        592
+      ],
+      "id": "<NODE_ID>",
+      "name": "Modificación Evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Calendar API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventos = $input.all();\nconst nombreNodoIA = 'Datos modificar evento'; \n\n// NUEVA FUNCIÓN: Mantiene la hora tal cual la vemos en España\nfunction aFechaLocalISO(fechaObj) {\n    const tzo = -fechaObj.getTimezoneOffset();\n    const dif = tzo >= 0 ? '+' : '-';\n    const pad = (num) => (num < 10 ? '0' : '') + num;\n    \n    return fechaObj.getFullYear() +\n        '-' + pad(fechaObj.getMonth() + 1) +\n        '-' + pad(fechaObj.getDate()) +\n        'T' + pad(fechaObj.getHours()) +\n        ':' + pad(fechaObj.getMinutes()) +\n        ':' + pad(fechaObj.getSeconds());\n}\n\nlet datosNuevos = {};\ntry {\n    datosNuevos = $(nombreNodoIA).first().json;\n} catch (e) {\n    return { json: { accion: \"error\", error_tipo: \"NODO_ANTERIOR_NO_ENCONTRADO\" } };\n}\n\n// CASO 1: NO HAY EVENTOS\nif (eventos.length === 0 || !eventos[0].json.id) {\n    return { json: { accion: \"nada\", q_buscada: datosNuevos.q || 'event' } };\n}\n\n// CASO 2: VARIOS EVENTOS (Solo ID)\nif (eventos.length > 1) {\n    const botones = eventos.slice(0, 5).map(evento => {\n        const fecha = new Date(evento.json.start.dateTime || evento.json.start.date);\n        const fechaTxt = fecha.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });\n        return [{\n            text: `${evento.json.summary} (${fechaTxt})`,\n            callback_data: `mod|${evento.json.id}` // Solo mandamos el ID\n        }];\n    });\n    return { json: { accion: \"preguntar\", reply_markup: { inline_keyboard: botones } } };\n}\n\n// CASO 3: UN SOLO EVENTO\nconst original = eventos[0].json;\nconst datosIA = $('Datos modificar evento').first().json;\n\n// 1. Modificar Título y Descripción si la IA detectó cambios\nif (datosIA.newSummary) original.summary = datosIA.newSummary;\nif (datosIA.newDescription) original.description = datosIA.newDescription;\n\n// 2. Gestión inteligente de fecha y duración\nlet fechaBaseOriginal = (original.start.dateTime || original.start.date).split('T')[0];\nlet finalStart = original.start.dateTime || original.start.date;\nlet finalEnd = original.end.dateTime || original.end.date;\n\nif (datosIA.newStart) {\n    // Si la IA manda solo hora (empieza por T), mantenemos el día original\n    if (datosIA.newStart.startsWith('T')) {\n        finalStart = fechaBaseOriginal + datosIA.newStart;\n    } else {\n        finalStart = datosIA.newStart;\n    }\n\n    // Calculamos duración original para mantener el bloque de tiempo\n    const msInicioOriginal = new Date(original.start.dateTime || original.start.date).getTime();\n    const msFinOriginal = new Date(original.end.dateTime || original.end.date).getTime();\n    const duracionOriginalMs = msFinOriginal - msInicioOriginal;\n\n    const nuevoInicioMs = new Date(finalStart).getTime();\n    const nuevoFinDate = new Date(nuevoInicioMs + duracionOriginalMs);\n    \n    const pad = (n) => n.toString().padStart(2, '0');\n    finalEnd = `${nuevoFinDate.getFullYear()}-${pad(nuevoFinDate.getMonth() + 1)}-${pad(nuevoFinDate.getDate())}T${pad(nuevoFinDate.getHours())}:${pad(nuevoFinDate.getMinutes())}:${pad(nuevoFinDate.getSeconds())}`;\n}\n\n// 3. Gestión de Recordatorios\nlet finalReminder = 15;\nif (original.reminders?.overrides?.length > 0) {\n    finalReminder = original.reminders.overrides[0].minutes;\n}\nif (datosIA.newReminder) finalReminder = datosIA.newReminder;\n\nreturn {\n    json: {\n        accion: \"modificar\",\n        id: original.id,\n        updateSummary: original.summary,\n        updateDescription: original.description || \"\",\n        updateStart: finalStart,\n        updateEnd: finalEnd,\n        updateReminder: finalReminder\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        736
+      ],
+      "id": "<NODE_ID>",
+      "name": "Mensaje Formateado Modificar"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3184,
+        672
+      ],
+      "id": "<NODE_ID>",
+      "name": "Evento Modificado",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "modificar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "<RULE_ID>"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "modificar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "nada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "avisar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "preguntar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "preguntar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2256,
+        720
+      ],
+      "id": "<NODE_ID>",
+      "name": "Switch modificar"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        400
+      ],
+      "id": "<NODE_ID>",
+      "name": "Get a file",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        16,
+        400
+      ],
+      "id": "<NODE_ID>",
+      "name": "Transcribe audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "id": "<NODE_ID>",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -944,
+        752
+      ],
+      "webhookId": "<WEBHOOK_ID>",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        624
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        352
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3184,
+        160
+      ],
+      "id": "<NODE_ID>",
+      "name": "Evento Eliminado",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -928,
+        1392
+      ],
+      "id": "<NODE_ID>",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "7087612842",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        1392
+      ],
+      "id": "<NODE_ID>",
+      "name": "Send a text message",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=### ROL:\nEres un experto analista de productividad multilingüe.\n\n### TAREA:\nExtrae el título y las notas del siguiente mensaje: \"{{ $json.text || $('Memoria Texto Original').item.json.textoUser }}\"\n\n### REGLAS CRÍTICAS:\n1. IDIOMA: Mantén el título y las notas en el IDIOMA ORIGINAL del usuario. \n   - Si dice \"Buy milk\", el título es \"Buy milk\" (NO \"Comprar leche\").\n   - Si dice \"Acheter du pain\", el título es \"Acheter du pain\".\n2. CONCISIÓN: El título debe ser directo. Mueve los detalles secundarios al campo \"note\".\n3. FORMATO: Responde ÚNICAMENTE con un objeto JSON.\n\n### JSON DE SALIDA:\n{\n  \"title\": \"Título en idioma original\",\n  \"note\": \"Detalles adicionales en idioma original o null\"\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1312,
+        1536
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Tareas"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        1760
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model6",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2464,
+        1536
+      ],
+      "id": "<NODE_ID>",
+      "name": "Tarea creada",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## SISTEMA DE NOTIFICACIONES",
+        "height": 288,
+        "width": 1508,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        1296
+      ],
+      "id": "<NODE_ID>",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ASISTENTE PERSONAL",
+        "height": 2624,
+        "width": 4448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -704
+      ],
+      "id": "<NODE_ID>",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"textoUser\": \"{{ $json.text || $json.message.text }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        496
+      ],
+      "id": "<NODE_ID>",
+      "name": "Memoria Texto Original"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "<ID>",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        592
+      ],
+      "id": "<NODE_ID>",
+      "name": "Normalizador de Texto"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Actúa como un enrutador de tráfico para un bot personal.\nAnaliza el mensaje del usuario en cualquier idioma (español, inglés, francés, etc.) y clasifica su intención en UNA sola categoría.\n\nResponde ÚNICAMENTE con una de las siguientes palabras clave en español (en minúsculas y sin signos de puntuación):\n\n\"crear\" -> Si el usuario quiere agendar, añadir, recordar o tiene una tarea (Ej: \"Dentista mañana\", \"Schedule a meeting\").\n\n\"ver\" -> Si el usuario quiere consultar su agenda o preguntar por eventos (Ej: \"¿Qué tengo hoy?\", \"Show my calendar\").\n\n\"eliminar\" -> Si el usuario quiere borrar, cancelar o quitar un evento (Ej: \"Borrar cena\", \"Cancel my lunch\").\n\n\"modificar\" -> Si el usuario quiere cambiar fecha, mover o posponer un evento (Ej: \"Pásalo a las 5\", \"Reschedule to 5pm\").\n\n\"clima\" -> Si el usuario pregunta por el tiempo o temperatura (Ej: \"¿Lloverá?\", \"What's the weather like?\").\n\n\"Categoría 'tarea' -> Si el usuario quiere anotar algo pendiente sin una hora específica (Ej: 'Recuérdame comprar leche', 'Añadir pan a la lista', 'Tengo que llamar a Juan').\"\n\n\"otro\" -> Saludos o cualquier cosa no relacionada.\n\nIMPORTANTE: Tu respuesta debe ser SOLO la palabra clave en español. Nada más."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        528,
+        400
+      ],
+      "id": "<NODE_ID>",
+      "name": "Analizador de Intenciones"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memoria Texto Original').item.json.textoUser }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un asistente experto en gestión de calendario.\nLa fecha y hora actual es: {{ $now }}\n\nTu misión: Identificar el idioma del usuario, extraer los datos del evento y devolver un JSON.\n\nReglas OBLIGATORIAS:\n\n1. IDIOMA: Detecta el idioma del mensaje. Extrae el summary y la description manteniendo el idioma original del usuario (ej: si dice \"Dinner with Sarah\", el summary debe ser \"Dinner with Sarah\").\n\n2. FORMATO: Responde ÚNICAMENTE con un objeto JSON válido. Sin markdown (```json) ni texto extra.\n\n3. FECHAS Y HORAS (CÁLCULO EXACTO):\n\nREFERENCIA: Hoy es {{ $now }}.\n\nLÓGICA SEMANAL: Si el usuario dice \"este [día]\" o \"el [día]\", se refiere al próximo [día] que está por venir.\n\nEjemplo: Si hoy es lunes 30 de marzo, \"este sábado\" es el 4 de abril de 2026.\n\nInicio: ISO 8601 (YYYY-MM-DDTHH:mm:ss).\n\nFin (EXTRACCIÓN PRIORITARIA): Si menciona hora de fin, úsala. Si no, suma 1 hora.\n\n4. RECORDATORIOS: Extrae el tiempo de antelación en MINUTOS. Ej: \"remind me in 1 hour\" -> 60. Si no menciona nada -> null.\n\n5. EVENTOS DE TODO EL DÍA: Si el usuario indica fecha pero NO hora, marca \"allday\": true. Si indica hora, marca \"allday\": false.\n\nEstructura del JSON a devolver:\n{\n\"summary\": \"Título en idioma original\",\n\"description\": \"Descripción en idioma original\",\n\"start\": \"YYYY-MM-DDTHH:mm:ss\",\n\"end\": \"YYYY-MM-DDTHH:mm:ss\",\n\"reminder\": 60,\n\"allday\": false\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1104,
+        -672
+      ],
+      "id": "<NODE_ID>",
+      "name": "IA Crear Eventos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n        \n        let finalStart = data.start;\n        let finalEnd = data.end;\n\n        if (data.allday === true) {\n            finalStart = data.start.split('T')[0];\n            \n            const startDateObj = new Date(finalStart);\n            const nextDay = new Date(startDateObj);\n            nextDay.setDate(startDateObj.getDate() + 1);\n            finalEnd = nextDay.toISOString().split('T')[0];\n        }\n\n        return {\n            json: {\n                summary: data.summary,\n                description: data.description,\n                start: finalStart,\n                end: finalEnd,\n                allday: data.allday || false, \n                reminder: data.reminder !== undefined ? data.reminder : null\n            }\n        };\n    } catch (e) { return { json: { error: \"Error JSON\" } }; }\n}\nreturn { json: {} };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -576
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos Modelo Crear"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=INSTRUCCIÓN SUPREMA DE IDIOMA:\n\nDetecta el idioma de este mensaje: {{ $('Memoria Texto Original').item.json.textoUser }}.\n\nPROHIBIDO usar el español si el mensaje original no es español.\n\nResponde íntegramente en el idioma detectado. No mezcles idiomas.\n\nREGLA DE FORMATO HORARIO (CRÍTICA):\n\nOBLIGATORIO: Si el evento tiene hora de inicio y fin, muestra el rango completo (ej: \"10:00 AM - 12:00 PM\" o \"10:00 a 12:00\").\n\nPROHIBIDO: Mencionar \"UTC\", \"Z\" o desfases horarios como (+02:00).\n\nSi el evento es hoy o mañana, usa \"today/tomorrow\" u \"hoy/mañana\" según el idioma.\n\nDATOS DEL EVENTO:\n\nNombre: {{ $json.summary }}\n\nInicio: {{ $json.start.dateTime || $json.start.date }}\n\nFin: {{ $json.end.dateTime || $json.end.date }}\n\nLink: {{ $json.htmlLink }}\n\nTAREA: Redacta una confirmación humana, amable y con emojis. Asegúrate de que todas las etiquetas (como \"Event:\", \"When:\", \"Link:\") estén en el idioma del usuario. El español es solo para cuando el usuario hable en español."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        -576
+      ],
+      "id": "<NODE_ID>",
+      "name": "Confirmación Creación",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=INSTRUCCIÓN OBLIGATORIA DE IDIOMA:\n\nAnaliza el idioma de: {{ $('Memoria Texto Original').item.json.textoUser }}.\n\nPROHIBIDO responder en español si el usuario ha escrito en otro idioma.\n\nResponde exclusivamente en el mismo idioma detectado (si es Alemán, responde en Alemán; si es Francés, en Francés).\n\nCorrige \"Ola\" por \"Hola\" solo si el idioma detectado es español.\n\nDATOS REALES DEL CALENDARIO (Analiza esta lista):\n{{ JSON.stringify($('Ver eventos').all().map(item => item.json)) }}\n\nTU ROL: Asistente personal amable.\n\nTAREA: Redacta un resumen de la agenda basándote SOLO en los DATOS REALES de arriba.\n\nREGLAS CRÍTICAS:\n\nSI LA LISTA ESTÁ VACÍA (o es []): Di que no hay eventos programados y desea un buen día.\n\nINTEGRIDAD: Muestra TODOS los eventos del JSON. No omitas ninguno aunque tengan nombres similares.\n\nPRECISIÓN TEMPORAL: No calcules el día de la semana por tu cuenta. Extrae el día, mes y año exacto que viene en el campo start de cada evento del JSON.\n\nFORMATO: Usa NEGRITA o MAYÚSCULAS para los días. No uses almohadillas (###). Usa emojis (📅, 🕒).\n\nLIMPIEZA:\n\nNo menciones 'el idioma detectado es...', ve directo al saludo y la agenda.\n\nNo menciones UTC, ni IDs, ni formatos ISO. Usa horas amigables (ej: 10:00).\n\nSi un evento es de \"todo el día\", no pongas horas."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        -176
+      ],
+      "id": "<NODE_ID>",
+      "name": "Resumen Agenda",
+      "executeOnce": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### ROL:\nEres un asistente personal bilingüe, alegre y muy eficiente.\n\n### DATOS DE HOY:\n- Fecha: {{ $now.setLocale('es').format(\"cccc, d 'de' LLLL\") }}\n- Clima en Madrid: {{ $node[\"Clima Madrid\"].json.weather[0].description }}, {{ Math.round($node[\"Clima Madrid\"].json.main.temp) }}°C.\n- Agenda de hoy: {{ $('Lector Agenda del Día').all().map(e => e.json.summary).join(', ') || 'No tienes eventos hoy' }}\n- Tareas pendientes: {{ $('Tareas restantes').all().map(t => t.json.title).filter(title => title).join(', ') || 'No tienes tareas pendientes' }}\n\n### TAREA:\nEscribe un mensaje de \"Buenos días\" para enviarlo por Telegram. \n1. Saluda de forma natural mencionando el clima.\n2. Resume los eventos de la agenda.\n3. Menciona las tareas pendientes como recordatorios.\n4. Da un consejo basado en el clima de Madrid.\n5. Sé breve, motivador y usa emojis."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        1392
+      ],
+      "id": "<NODE_ID>",
+      "name": "Saludo Matutino",
+      "executeOnce": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### INSTRUCCIÓN SUPREMA DE IDIOMA:\n1. Analiza en silencio el idioma de este mensaje original: \"{{ $('Memoria Texto Original').item.json.textoUser }}\".\n2. Responde íntegramente en el idioma detectado. No mezcles idiomas.\n3. PROHIBIDO usar el español si el mensaje original no es español.\n\n### DATOS DE LA TAREA (CONTEXTO):\n- Título: {{ $json.title }}\n- Notas: {{ $json.notes || \"Sin notas adicionales\" }}\n- Lista: Mis tareas (Traduce \"Mis tareas\" al idioma detectado si no es español).\n\n### TAREA:\nRedacta una confirmación humana, amable y corta con emojis informando que la tarea se guardó correctamente.\n\n### REGLAS DE ESTILO (CRÍTICAS):\n- PROHIBIDO: No menciones qué idioma has detectado ni escribas frases como \"El idioma detectado es...\". Ve directo al grano.\n- No menciones \"ID\", \"JSON\", nombres de nodos ni términos técnicos.\n- Asegúrate de que todas las etiquetas (ej: \"Tarea:\", \"Notas:\", \"Task:\", \"When:\") estén en el idioma del usuario.\n- Sé directo, humano y motivador."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2112,
+        1536
+      ],
+      "id": "<NODE_ID>",
+      "name": "Confirmación Tarea",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=INSTRUCCIÓN SUPREMA DE IDIOMA:\n\nDetecta el idioma del mensaje original: {{ $('Memoria Texto Original').item.json.textoUser }}.\n\nPROHIBIDO responder en un idioma distinto al del usuario. Responde íntegramente en ese idioma.\n\nTU ROL: Eres un experto meteorólogo local, amable y conversacional.\n\nDATOS REALES (API):\n\nCiudad: {{ $json.name }}\n\nTemperatura: {{ Math.round($json.main.temp) }}°C\n\nSensación térmica: {{ Math.round($json.main.feels_like) }}°C\n\nHumedad: {{ $json.main.humidity }}%\n\nDescripción: {{ $json.weather[0].description }}\n\nTAREA: Redacta un informe del clima breve pero humano. No te limites a dar los datos; da un consejo basado en la temperatura (ej: si hace menos de 15°C, sugiere abrigo; si llueve, sugiere paraguas).\n\nESTILO: Usa emojis de clima según la descripción. Todo debe estar en el idioma del usuario."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        1136
+      ],
+      "id": "<NODE_ID>",
+      "name": "Información Clima",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "timeMin": "={{ $now.startOf('day').toISO() }}",
+        "timeMax": "={{ $now.endOf('day').toISO() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -704,
+        1392
+      ],
+      "id": "<NODE_ID>",
+      "name": "Lector Agenda del Día",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Calendar API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<SPREADSHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Memoria Botón Modificar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13VPRtOrw_3mVCzTDRtYxZubinUDnZ3RmBUg1wcgVywI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "<SHEET_GID>",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13VPRtOrw_3mVCzTDRtYxZubinUDnZ3RmBUg1wcgVywI/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID_Evento",
+              "lookupValue": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        832
+      ],
+      "id": "<NODE_ID>",
+      "name": "Información Cambio Evento",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "<RULE_ID>",
+              "leftValue": "={{ $json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -496,
+        496
+      ],
+      "id": "<NODE_ID>",
+      "name": "If Voz/Texto"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "crear",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "<RULE_ID>"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "añadir_tarea"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "ver",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ver_tareas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "eliminar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "eliminar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "modificar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "modificar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "clima",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "clima"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "tarea",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "tarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        880,
+        432
+      ],
+      "id": "<NODE_ID>",
+      "name": "Enrutador de Acciones"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "<RULE_ID>"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Mensaje nuevo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.callback_query }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Callback"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        752
+      ],
+      "id": "<NODE_ID>",
+      "name": "Mensaje/Botón"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "mod|",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "<RULE_ID>"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Modificar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "<RULE_ID>",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "mod\n",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notStartsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Eliminar"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        944
+      ],
+      "id": "<NODE_ID>",
+      "name": "Selector Acción Botón"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const data = $json.callback_query.data; \nconst partes = data.split('|');\n\n// Solo extraemos el ID limpio para dárselo a Google Calendar\nreturn {\n    id_limpio: partes[1]\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        848
+      ],
+      "id": "<NODE_ID>",
+      "name": "Extractor ID Evento"
+    },
+    {
+      "parameters": {
+        "jsCode": "const textResponse = $input.first().json.text;\n\n// Buscamos donde empieza y termina el JSON\nconst firstBrace = textResponse.indexOf('{');\nconst lastBrace = textResponse.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = textResponse.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n        return {\n            json: {\n                title: data.title,\n                notes: data.note || \"\"\n            }\n        };\n    } catch (e) {\n        return { json: { title: \"Error al leer tarea\", notes: textResponse } };\n    }\n}\n\nreturn { json: { title: textResponse, notes: \"\" } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        1536
+      ],
+      "id": "<NODE_ID>",
+      "name": "Datos Tarea"
     },
     {
       "parameters": {
@@ -308,395 +1627,407 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1824,
-        592
+        1680,
+        1136
       ],
       "id": "<NODE_ID>",
-      "name": "HTTP Request"
+      "name": "Consulta OpenWeather"
     },
     {
       "parameters": {
-        "jsCode": "const eventos = $input.all();\n\n//Verificar si la lista está vacía\nif (eventos.length === 0) {\n    return { json: { text: \"📅 No se han encontrado eventos para esas fechas.\" } };\n}\n\n//Verificar si es un evento real\nconst primerEvento = eventos[0].json;\nif (!primerEvento.start && !primerEvento.id) {\n    return { json: { text: \"📅 No se han encontrado eventos para esas fechas.\" } };\n}\n\n//Procesar los eventos reales\nlet mensaje = \"📅 *Agenda:*\\n\\n\";\n\nfor (const item of eventos) {\n    const ev = item.json;\n\n    if (!ev.start) continue;\n\n    let hora = \"\";\n\n    if (ev.start.dateTime) {\n        try {\n            hora = ev.start.dateTime.split('T')[1].slice(0, 5);\n        } catch (e) {\n            hora = \"Hora desc.\";\n        }\n    } else if (ev.start.date) {\n        hora = \"Todo el día\";\n    } else {\n        hora = \"--:--\";\n    }\n\n    mensaje += `• *${hora}* - ${ev.summary || \"Sin título\"}\\n`;\n}\n\nreturn { json: { text: mensaje } };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2000,
-        -272
-      ],
-      "id": "<NODE_ID>",
-      "name": "Mensaje Formateado Eventos"
-    },
-    {
-      "parameters": {
-        "jsCode": "const data = $input.first().json;\n\nconst ciudad = data.name;\nconst temp = Math.round(data.main.temp); \nconst sensacion = Math.round(data.main.feels_like);\nconst humedad = data.main.humidity;\nconst descripcion = data.weather[0].description;\n\nlet icono = \"☁️\"; \nif (descripcion.includes(\"claro\") || descripcion.includes(\"sol\")) icono = \"☀️\";\nif (descripcion.includes(\"lluvia\")) icono = \"🌧️\";\nif (descripcion.includes(\"nubes\")) icono = \"☁️\";\nif (descripcion.includes(\"tormenta\")) icono = \"⚡\";\nif (descripcion.includes(\"nieve\")) icono = \"❄️\";\n\nconst mensaje = `\n${icono} *El clima en ${ciudad}:*\n\n🌡 *Temperatura:* ${temp}°C\n🤔 *Sensación:* ${sensacion}°C\n💧 *Humedad:* ${humedad}%\n📝 *Cielo:* ${descripcion}\n`;\n\nreturn {\n  json: {\n    text: mensaje\n  }\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2000,
-        592
-      ],
-      "id": "<NODE_ID>",
-      "name": "Mensaje Formateado Clima"
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $item(0).$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}",
-        "text": "={{ $json.text }}",
-        "additionalFields": {
-          "parse_mode": "Markdown"
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2192,
-        592
-      ],
-      "id": "<NODE_ID>",
-      "name": "Clima",
-      "webhookId": "<WEBHOOK_ID>",
-      "credentials": {
-        "telegramApi": {
-          "id": "<TELEGRAM_CREDENTIAL_ID>",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.message.text }}1",
-        "messages": {
-          "messageValues": [
+        "method": "POST",
+        "url": "https://api.telegram.org/bot7606058234:AAFMF_ExAW6o3rzpjPIStb66CvknjaAaOm8/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "message": "=Actúa como un enrutador de tráfico para un bot personal. \nAnaliza el mensaje del usuario y clasifica su intención en UNA sola categoría.  \n\nResponde ÚNICAMENTE con una de las siguientes palabras clave (en minúsculas y sin signos de puntuación):  \n\n1. \"crear\" -> Si el usuario quiere agendar, añadir, recordar, reservar o tiene una tarea pendiente. (Ej: \"Dentista mañana\", \"Agendar reunión\"). \n2. \"ver\" -> Si el usuario quiere consultar su agenda, ver qué tiene pendiente o preguntar por eventos. (Ej: \"¿Qué tengo hoy?\", \"Ver calendario\"). \n3. \"eliminar\" -> Si el usuario quiere borrar, cancelar, anular o quitar un evento.\n4. \"modificar\" -> Si el usuario quiere cambiar fecha, hora, mover, posponer o adelantar un evento.\n5. \"clima\" -> Si el usuario pregunta por el tiempo, lluvia o temperatura. \n6. \"otro\" -> Cualquier otra cosa que no sea lo anterior (saludos, insultos, etc).  \nIMPORTANTE: Tu respuesta debe ser SOLO la palabra clave. Nada más."
+              "name": "Content-Type",
+              "value": "application/json"
             }
           ]
         },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        752,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "Clasificador"
-    },
-    {
-      "parameters": {
-        "jsCode": "const textResponse = $input.first().json.text;\n\nconst firstBrace = textResponse.indexOf('{');\nconst lastBrace = textResponse.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = textResponse.substring(firstBrace, lastBrace + 1);\n\n    try {\n        const data = JSON.parse(jsonString);\n\n        return {\n            json: {\n                timeMin: data.timeMin,\n                timeMax: data.timeMax\n            }\n        };\n    } catch (e) {\n        return { json: {} };\n    }\n}\n\nreturn { json: {} };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1648,
-        -272
-      ],
-      "id": "<NODE_ID>",
-      "name": "Datos Modelo Eventos"
-    },
-    {
-      "parameters": {
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"chat_id\": \"{{ $('Telegram Trigger').first().json.message.chat.id }}\",\n  \"text\": {{ JSON.stringify($json.output[0].content[0].text) }},\n  \"reply_markup\": {{ JSON.stringify($('Mensaje Formateado Eliminar').item.json.reply_markup) }}\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
       "position": [
-        752,
-        192
+        2896,
+        400
       ],
       "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (1)",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
-        }
-      }
+      "name": "Enviar Botones Eliminar"
     },
     {
       "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot7606058234:AAFMF_ExAW6o3rzpjPIStb66CvknjaAaOm8/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"chat_id\": \"{{ $('Telegram Trigger').first().json.message?.chat.id || $('Telegram Trigger').first().json.callback_query?.message.chat.id }}\",\n  \"text\": \"{{ $('Pregunta Modificación').item.json.output[0].content[0].text }}\",\n  \"reply_markup\": {{ JSON.stringify($('Mensaje Formateado Modificar').item.json.reply_markup) }}\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
       "position": [
-        1344,
-        -384
+        3184,
+        912
       ],
       "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (2)",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
-        }
-      }
+      "name": "Enviar Botones Modificar"
     },
     {
       "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "Madrid,ES"
+            },
+            {
+              "name": "appid",
+              "value": "{{ $env.OPENWEATHERMAP_API_KEY }}"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "es"
+            }
+          ]
+        },
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        1344,
-        -112
+        -272,
+        1392
       ],
       "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (3)",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
-        }
-      }
+      "name": "Clima Madrid"
     },
     {
       "parameters": {
-        "jsCode": "const text = $input.first().json.text;\n\nconst fallbackCity = \"Madrid,ES\";\n\nfunction parseCity(str) {\n    const firstBrace = str.indexOf('{');\n    const lastBrace = str.lastIndexOf('}');\n\n    if (firstBrace !== -1 && lastBrace !== -1) {\n        const jsonString = str.substring(firstBrace, lastBrace + 1);\n        try {\n            const data = JSON.parse(jsonString);\n\n            return data.ciudad || fallbackCity;\n        } catch (e) {\n            console.log(\"Error al parsear JSON del clima\");\n        }\n    }\n    return fallbackCity;\n}\n\nconst ciudadDetectada = parseCity(text);\n\nreturn {\n    json: {\n        ciudad: ciudadDetectada\n    }\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1648,
-        592
-      ],
-      "id": "<NODE_ID>",
-      "name": "Datos Clima"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1344,
-        176
-      ],
-      "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (4)",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
-        "messages": {
-          "messageValues": [
-            {
-              "message": "=Eres un experto meteorólogo. \nTu misión: Extraer el nombre de la ciudad que menciona el usuario.  \n\nReglas: \n1. Si menciona una ciudad (ej: \"Clima en Roma\"), extrae solo \"Roma\". \n2. Si NO menciona ciudad (ej: \"¿Va a llover?\", \"¿Qué temperatura hace?\"), asume por defecto: \"Madrid,ES\" (o tu ciudad). \n3. Responde SOLO con este JSON: \n{   \n\"ciudad\": \"NombreCiudad\" \n}"
-            }
-          ]
-        },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        1344,
-        592
-      ],
-      "id": "<NODE_ID>",
-      "name": "IA Clima"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
-        "messages": {
-          "messageValues": [
-            {
-              "message": "=Eres un asistente técnico de calendario.\nTu misión es extraer la intención de borrado del mensaje del usuario.\n\nINSTRUCCIONES:\n1. Analiza el mensaje (ej: \"Borrar la cena del viernes\").\n2. Extrae la palabra clave en el campo \"q\" (ej: \"cena\").\n3. Si hay referencias de tiempo, calcula \"timeMin\" y \"timeMax\".\n\nResponde SOLO con este JSON:\n{\n  \"q\": \"palabra_clave\",\n  \"timeMin\": \"YYYY-MM-DD...\",\n  \"timeMax\": \"YYYY-MM-DD...\"\n}"
-            }
-          ]
-        },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        1344,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "IA Eliminar"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
-        "messages": {
-          "messageValues": [
-            {
-              "message": "=Eres un asistente experto en gestión de calendario.\nLa fecha y hora actual es: {{ $now }}\n\nTu misión: Extraer los datos del evento del mensaje del usuario y devolver un JSON.\n\nReglas OBLIGATORIAS:\n1. Responde ÚNICAMENTE con un objeto JSON válido. Sin markdown (```json) ni texto extra.\n2. Formato de fecha: \n   - Si tiene hora: ISO 8601 (YYYY-MM-DDTHH:mm:ss).\n   - Si es todo el día: YYYY-MM-DD.\n3. DURACIÓN POR DEFECTO: Si el usuario no especifica hora de fin, calcula la hora de fin sumando EXACTAMENTE 1 HORA a la hora de inicio.\n4. Si falta la descripción, déjala como cadena vacía \"\".\n5. RECORDATORIOS (IMPORTANTE):\n   - Extrae el tiempo de antelación en MINUTOS.\n   - Ej: \"avísame 1 hora antes\" -> 60.\n   - Ej: \"sin recordatorio\" -> 0.\n   - Si el usuario NO menciona nada sobre avisos -> null.\n6. EVENTOS DE TODO EL DÍA:\n   - Si el usuario dice una fecha pero NO dice hora (ej: \"Cumpleaños mañana\", \"Vacaciones el viernes\"), marca \"allday\": true.\n   - Si dice hora, marca \"allday\": false.\n\nEstructura del JSON a devolver:\n{\n  \"summary\": \"Título del evento\",\n  \"description\": \"Descripción\",\n  \"start\": \"2025-11-20T10:00:00\" (o \"2025-11-20\"),\n  \"end\": \"2025-11-20T11:00:00\",\n  \"reminder\": 60,\n  \"allday\": false\n}"
-            }
-          ]
-        },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        1344,
-        -544
-      ],
-      "id": "<NODE_ID>",
-      "name": "IA Crear Eventos"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
-        "messages": {
-          "messageValues": [
-            {
-              "message": "=Eres un calculador de fechas para consultar calendarios. \nLa fecha y hora actual es: {{ $now }}  \n\nTu misión: Leer qué periodo de tiempo le interesa al usuario y devolver un JSON con la fecha de inicio y fin.  \n\nReglas: \n\n1. Si dice \"hoy\": Inicio = ahora, Fin = hoy a las 23:59:59. \n2. Si dice \"mañana\": Inicio = mañana 00:00:00, Fin = mañana 23:59:59. \n3. Si dice \"esta semana\": Inicio = ahora, Fin = domingo 23:59:59. \n4. Si NO especifica fecha (ej: \"¿Qué tengo?\"): Asume las próximas 24 horas.  \n\nResponde SOLO con este JSON: \n{   \n\"timeMin\": \"YYYY-MM-DDTHH:mm:ss\",   \n\"timeMax\": \"YYYY-MM-DDTHH:mm:ss\" \n}"
-            }
-          ]
-        },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        1344,
-        -272
-      ],
-      "id": "<NODE_ID>",
-      "name": "IA Mostrar Eventos"
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "calendar": {
+        "modelId": {
           "__rl": true,
-          "value": "<YOUR_EMAIL>",
+          "value": "gpt-4o-mini",
           "mode": "list",
-          "cachedResultName": "<YOUR_EMAIL>"
+          "cachedResultName": "GPT-4O-MINI"
         },
-        "timeMin": "={{ $json.timeMin }}",
-        "timeMax": "={{ $json.timeMax }}",
-        "options": {
-          "query": "={{ $json.q }}"
-        }
-      },
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
-      "position": [
-        1824,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "Ver eventos para eliminar",
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "rules": {
+        "responses": {
           "values": [
             {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "borrar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "c461ad76-4d0b-4bf6-90f5-01e3c368d9c1"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "borrar_evento"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c5bb19c0-4899-42dc-908a-89b99ff7df19",
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "=preguntar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "preguntar"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "92a00271-cc8d-4253-90e3-8a58999ec61e",
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "nada",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "avisar_nada"
+              "content": "=### REGLA DE ORO DE IDIOMA (INVIOLABLE):\n1. Analiza el texto del usuario: \"{{ $('Memoria Texto Original').item.json.textoUser }}\".\n2. Identifica el idioma predominante. Si detectas partículas como \"le\", \"the\", \"at\" o verbos en otro idioma, CAMBIA totalmente a ese idioma.\n3. Tu respuesta debe ser un ESPEJO del idioma del usuario. Si el usuario escribe en francés, responde 100% en francés.\n\n### TU TAREA (TRADUCCIÓN DINÁMICA):\nGenera UNA SOLA FRASE corta según la \"Acción detectada\", traducida íntegramente al idioma del usuario:\n\n- Si la acción es \"borrar\": Confirma que el evento \"{{ $json.titulo_borrado }}\" ha sido eliminado. ✅\n- Si la acción es \"nada\": Informa de que no has encontrado eventos para la próxima semana. ❌\n\n### REGLA DE FORMATO:\n- Responde DIRECTAMENTE con la frase. \n- PROHIBIDO usar el español si el mensaje original no es español.\n\n### REGLA DE FORMATO (ESTRICTA):\n- No escribas \"Respuesta:\", no escribas \"Acción:\", no pongas títulos.\n- Escribe DIRECTAMENTE la frase traducida al idioma detectado.\n- No uses comillas innecesarias.\n\n### DATOS PARA DETECTAR IDIOMA:\n- Texto original: {{ $('Telegram Trigger').first().json.message?.text || ($('Transcribe audio').isExecuted ? $('Transcribe audio').item.json.text : '') }}\n- Acción detectada: {{ $json.accion }}"
             }
           ]
         },
+        "builtInTools": {},
         "options": {}
       },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
       "position": [
-        2192,
-        0
+        2832,
+        160
       ],
       "id": "<NODE_ID>",
-      "name": "Switch eliminar"
+      "name": "Confirmación Borrado",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### REGLA DE ORO DE IDIOMA (OBLIGATORIO):\n1. Detecta el idioma de este mensaje: \"{{ $('Memoria Texto Original').item.json.textoUser }}\".\n2. Tu respuesta DEBE estar íntegramente en ese mismo idioma.\n3. Si el mensaje es en inglés, responde SOLO en inglés. Si es en francés, SOLO en francés.\n4. PROHIBIDO usar el español si el mensaje original no es español.\n\n### TU TAREA:\nInforma al usuario de que has encontrado varios eventos similares en su calendario y que debe elegir cuál quiere borrar usando los botones que aparecen abajo. 📋\n\n### REGLAS DE FORMATO:\n- NO escribas la lista de eventos en el texto (ej: \"1. Study, 2. Study\"). Los botones ya tienen esa información.\n- Solo escribe la frase de instrucción de forma amable y concisa.\n- No menciones tecnicismos, IDs, ni nombres de nodos.\n\n### DATOS DE CONTEXTO:\n- Eventos detectados: {{ $json.lista_eventos }}\n\n### ESTILO:\n- Breve, directo y humano.\n- Usa emojis como 🤔 o 📋."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2480,
+        400
+      ],
+      "id": "<NODE_ID>",
+      "name": "Aviso Múltiples Eventos",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### REGLA DE ORO DE IDIOMA (OBLIGATORIO):\n1. Detecta el idioma de este mensaje: \"{{ $('Telegram Trigger').first().json.callback_query.message.text }}\".\n2. Tu respuesta DEBE estar íntegramente en ese mismo idioma.\n3. Si el mensaje anterior era en inglés, confirma en inglés. Si era en español, en español.\n4. PROHIBIDO cambiar de idioma respecto al mensaje previo.\n\n### TU TAREA:\nConfirma con alegría que el evento ha sido eliminado correctamente después de haber pulsado el botón. \n\n### REGLAS DE ESTILO:\n- Sé extremadamente breve (una sola frase).\n- Usa un emoji de celebración 🎉 o éxito ✅.\n- No menciones nombres técnicos.\n\n### ESTILO:\n- Directo, humano y amable."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        1024
+      ],
+      "id": "<NODE_ID>",
+      "name": "Confirmación Botón Borrado",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### REGLA DE ORO DE IDIOMA (OBLIGATORIA):\n1. Detecta el idioma de este mensaje: \"{{ $('Memoria Texto Original').item.json.textoUser }}\".\n2. Tu respuesta DEBE estar íntegramente en ese mismo idioma.\n3. PROHIBIDO usar el español si el mensaje original no es español.\n\n### TU TAREA:\nInforma al usuario de que has encontrado varios eventos similares y que debe seleccionar cuál es el que desea MODIFICAR usando los botones de abajo. 📋\n\n### REGLAS DE ESTILO:\n- Muy breve y amable.\n- No listes los eventos en el texto (los botones ya lo hacen).\n- Usa un emoji como 🤔 o 📅."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2480,
+        912
+      ],
+      "id": "<NODE_ID>",
+      "name": "Pregunta Modificación",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### REGLA DE ORO DE IDIOMA (INVIOLABLE):\n1. Analiza la estructura gramatical de: \"{{ $('Memoria Texto Original').item.json.textoUser }}\".\n2. Si el usuario usa conectores o verbos en INGLÉS (\"Move\", \"to\", \"at\"), responde 100% en INGLÉS.\n3. Si usa FRANCÉS (\"Déplace\", \"à\"), responde 100% en FRANCÉS.\n4. IGNORA el idioma del nombre del evento (ej: si el usuario dice \"Move Comida\", responde en INGLÉS, NO en español).\n5. PROHIBIDO usar español si la frase original no es mayoritariamente española.\n\n### TU TAREA:\nRedacta UNA sola frase breve según la \"Acción\":\n\n- ACCIÓN \"modificar\": Confirma que has actualizado \"{{ $json.updateSummary }}\" a las {{ $json.updateStart.slice(11,16) }}. ✅\n- ACCIÓN \"nada\": Informa de que no has encontrado \"{{ $json.q_buscada }}\" en el calendario. ❌\n\n### REGLAS DE ESTILO:\n- Responde DIRECTAMENTE con la frase.\n- No digas \"Idioma detectado...\".\n- Sé muy breve y usa emojis (📅, ✅).\n\n### DATOS:\n- Acción: {{ $json.accion }}\n- Texto original: {{ $('Memoria Texto Original').item.json.textoUser }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2832,
+        672
+      ],
+      "id": "<NODE_ID>",
+      "name": "Resumen Cambio",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=### REGLA DE ORO DE IDIOMA (INVIOLABLE):\n1. Detecta el idioma de este mensaje: \"{{ $('Telegram Trigger').first().json.callback_query.message.text }}\".\n2. Tu respuesta DEBE estar íntegramente en ese mismo idioma.\n3. Si el mensaje anterior era en inglés, confirma en inglés. Si era en español, en español.\n4. PROHIBIDO cambiar de idioma respecto al mensaje previo.\n\n### CONTEXTO:\nEl usuario ha confirmado la modificación del evento:\n- Título: {{ $json.Summary }}\n- Nueva hora: {{ $json.Start.slice(11,16) }}\n\n### TU TAREA:\nConfirma de forma muy breve y amable que el evento ha sido actualizado. Usa emojis.\n\n### REGLAS DE ESTILO:\n- Sé directo y humano.\n- No menciones IDs ni términos técnicos.\n- Usa un emoji (ej: ✅, 📅 o ✨).\n- Ejemplo: \"¡Listo! He actualizado el evento 'Study' a las 20:00 como me pediste.\""
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        832
+      ],
+      "id": "<NODE_ID>",
+      "name": "Éxito Actualización",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "<SPREADSHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Memoria Botón Modificar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13VPRtOrw_3mVCzTDRtYxZubinUDnZ3RmBUg1wcgVywI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "<SHEET_GID>",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13VPRtOrw_3mVCzTDRtYxZubinUDnZ3RmBUg1wcgVywI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID_Evento": "1",
+            "Summary": "={{ $('Datos modificar evento').first().json.newSummary }}",
+            "Start": "={{ $('Datos modificar evento').first().json.newStart }}",
+            "End": "={{ $('Datos modificar evento').first().json.newEnd }}",
+            "Description": "={{ $('Datos modificar evento').first().json.newDescription }}",
+            "Reminder": "={{ $('Datos modificar evento').first().json.newReminder || 15 }}"
+          },
+          "matchingColumns": [
+            "ID_Evento"
+          ],
+          "schema": [
+            {
+              "id": "<ID>",
+              "displayName": "ID_Evento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "<ID>",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "<ID>",
+              "displayName": "Start",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "<ID>",
+              "displayName": "End",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "<ID>",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "<ID>",
+              "displayName": "Reminder",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2896,
+        912
+      ],
+      "id": "<NODE_ID>",
+      "name": "Actualizar Fila Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -707,153 +2038,64 @@
           "mode": "list",
           "cachedResultName": "<YOUR_EMAIL>"
         },
-        "eventId": "={{ $json.id }}",
+        "eventId": "={{ $json.callback_query.data }}",
         "options": {}
       },
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        2400,
-        -80
+        -272,
+        1040
       ],
       "id": "<NODE_ID>",
-      "name": "Eliminar Evento",
+      "name": "Eliminar Evento Botón",
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
+          "name": "Google Calendar API"
         }
       }
     },
     {
       "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "={{ $('Mensaje Formateado Eliminar').item.json.mensaje }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2592,
-        -80
-      ],
-      "id": "<NODE_ID>",
-      "name": "Evento eliminado",
-      "webhookId": "<WEBHOOK_ID>",
-      "credentials": {
-        "telegramApi": {
-          "id": "<TELEGRAM_CREDENTIAL_ID>",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
-        "text": "={{ $('Mensaje Formateado Eliminar').first().json.mensaje }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2400,
-        80
-      ],
-      "id": "<NODE_ID>",
-      "name": "Mensaje aviso",
-      "webhookId": "<WEBHOOK_ID>",
-      "credentials": {
-        "telegramApi": {
-          "id": "<TELEGRAM_CREDENTIAL_ID>",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
-        "messages": {
-          "messageValues": [
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "<YOUR_EMAIL>",
+          "mode": "list",
+          "cachedResultName": "<YOUR_EMAIL>"
+        },
+        "eventId": "={{ $('Extractor ID Evento').item.json.id_limpio }}",
+        "useDefaultReminders": false,
+        "updateFields": {
+          "description": "={{ $json.Description }}",
+          "end": "={{ $json.End }}",
+          "start": "={{ $json.Start }}",
+          "summary": "={{ $json.Summary }}"
+        },
+        "remindersUi": {
+          "remindersValues": [
             {
-              "message": "=Eres un experto gestor de calendario.\nIMPORTANTE: La fecha y hora actual es: {{ $now }}\n\nTu misión: Identificar qué evento modificar y qué cambios hacer.\n\nReglas de LENGUAJE (Vitales):\n1. Diferencia entre BÚSQUEDA y DESTINO según las preposiciones:\n   - \"DEL\", \"DE\": Indica fecha de búsqueda (ej: \"La cena DEL viernes\"). -> Rellena 'searchDate'.\n   - \"AL\", \"PARA\", \"A LAS\": Indica fecha de destino (ej: \"Muévelo AL viernes\", \"Pásalo AL día 20\"). -> Rellena 'newStart', y deja 'searchDate' como null.\n   \n2. Si el usuario NO especifica de cuándo es el evento original (ej: \"Mueve el gimnasio...\"), asume que 'searchDate' es null (buscará desde hoy en adelante).\n\n3. REGLA DE DURACIÓN: Si solo cambia el inicio, deja \"newEnd\" como null.\n4. ZONA HORARIA: Copia la hora literal del usuario (T19:00:00), no conviertas a UTC.\n\nINSTRUCCIONES JSON:\n1. \"q\": Palabra clave para BUSCAR.\n2. \"searchDate\": Fecha de origen (YYYY-MM-DD) solo si dice \"DEL/DE\". Si dice \"AL\", es null.\n3. \"newStart\": Nueva fecha inicio (ISO 8601).\n4. \"newEnd\": Nueva fecha fin (ISO 8601) o null.\n5. \"newSummary\" / \"newDescription\": Texto o null.\n6. \"newReminder\": Minutos o null.\n\nResponde SOLO JSON:\n{\n  \"q\": \"texto\",\n  \"searchDate\": \"YYYY-MM-DD\" (o null),\n  \"newStart\": \"YYYY-MM-DDTHH:mm:ss\",\n  \"newEnd\": \"YYYY-MM-DDTHH:mm:ss\",\n  \"newSummary\": null,\n  \"newDescription\": null,\n  \"newReminder\": 30\n}"
+              "method": "popup",
+              "minutes": "={{ $json.Reminder || 15 }}"
             }
           ]
-        },
-        "batching": {}
+        }
       },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
       "position": [
-        1344,
-        304
+        240,
+        832
       ],
       "id": "<NODE_ID>",
-      "name": "IA Modificar Evento"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1344,
-        752
-      ],
-      "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (6)",
+      "name": "Modificar Evento Botón",
       "credentials": {
-        "googlePalmApi": {
+        "googleCalendarOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
+          "name": "Google Calendar API"
         }
       }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1344,
-        464
-      ],
-      "id": "<NODE_ID>",
-      "name": "Gemini 2.5 Flash (5)",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "<CREDENTIAL_ID>",
-          "name": "Google Gemini API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const eventos = $input.all();\n\nif (eventos.length === 0) {\n    return {\n        json: {\n            accion: \"nada\",\n            mensaje: \"🤷‍♂️ No se ha encontrado ningún evento con ese nombre en esas fechas.\"\n        }\n    };\n}\n\nif (eventos.length > 1) {\n    const listaNombres = eventos.map(e => `• ${e.json.summary} (${e.json.start.dateTime})`).join(\"\\n\");\n    \n    return {\n        json: {\n            accion: \"preguntar\",\n            mensaje: `⚠️ Se han encontrado ${eventos.length} eventos parecidos:\\n\\n${listaNombres}\\n\\nPor favor, sé más específico (ej: escribe la hora exacta).`\n        }\n    };\n}\n\nconst evento = eventos[0].json;\nreturn {\n    json: {\n        accion: \"borrar\",\n        id: evento.id,\n        titulo: evento.summary,\n        mensaje: `✅ El evento: ${evento.summary} ha sido eliminado`\n    }\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2000,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "Mensaje Formateado Eliminar"
-    },
-    {
-      "parameters": {
-        "jsCode": "const text = $input.first().json.text;\n\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n\n        return {\n            json: {\n                q: data.q,\n                timeMin: data.timeMin || new Date().toISOString(), \n                timeMax: data.timeMax\n            }\n        };\n    } catch (e) {\n        return { json: { q: \"ERROR_NO_HAY_BUSQUEDA\" } };\n    }\n}\nreturn { json: { q: \"ERROR_NO_HAY_BUSQUEDA\" } };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1648,
-        16
-      ],
-      "id": "<NODE_ID>",
-      "name": "Datos Modelo Eliminar"
     },
     {
       "parameters": {
@@ -874,100 +2116,58 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1824,
-        304
+        1680,
+        736
       ],
       "id": "<NODE_ID>",
-      "name": "Get many events",
+      "name": "Ver eventos para modificar",
       "alwaysOutputData": true,
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
+          "name": "Google Calendar API"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const text = $input.first().json.text;\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n\n        let tMin = undefined;\n        let tMax = undefined;\n\n        if (data.searchDate) {\n            tMin = `${data.searchDate}T00:00:00`;\n            tMax = `${data.searchDate}T23:59:59`;\n        }\n\n        return {\n            json: {\n                q: data.q || \"\",\n                searchTimeMin: tMin,\n                searchTimeMax: tMax,\n                newSummary: data.newSummary,\n                newDescription: data.newDescription,\n                newStart: data.newStart,\n                newEnd: data.newEnd,\n                newReminder: data.newReminder !== undefined ? data.newReminder : null\n            }\n        };\n    } catch (e) { return { json: { q: \"ERROR_JSON\" } }; }\n}\nreturn { json: { q: \"ERROR_NO_JSON\" } };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1648,
-        304
-      ],
-      "id": "<NODE_ID>",
-      "name": "Datos modificar evento"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "calendar": {
-          "__rl": true,
-          "value": "<YOUR_EMAIL>",
-          "mode": "list",
-          "cachedResultName": "<YOUR_EMAIL>"
-        },
-        "eventId": "={{ $json.id }}",
-        "useDefaultReminders": false,
-        "updateFields": {
-          "description": "={{ $json.updateDescription }}",
-          "end": "={{ $json.updateEnd }}",
-          "start": "={{ $json.updateStart }}",
-          "summary": "={{ $json.updateSummary }}"
-        },
-        "remindersUi": {
-          "remindersValues": [
-            {
-              "method": "popup",
-              "minutes": "={{ $json.updateReminder }}"
-            }
-          ]
+        "task": "MDUxMjg0ODE5NDk2MTM5NDYyMjg6MDow",
+        "title": "={{ $node[\"Datos Tarea\"].json.title }}",
+        "additionalFields": {
+          "notes": "={{ $node[\"Datos Tarea\"].json.notes }}"
         }
       },
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
       "position": [
-        2448,
-        240
+        1888,
+        1536
       ],
       "id": "<NODE_ID>",
-      "name": "Modificación Evento",
+      "name": "Crear tarea",
       "credentials": {
-        "googleCalendarOAuth2Api": {
+        "googleTasksOAuth2Api": {
           "id": "<CREDENTIAL_ID>",
-          "name": "Google Calendar Memoria"
+          "name": "Google Tasks account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const eventos = $input.all();\n\nconst nombreNodoIA = 'Datos modificar evento'; \n\nfunction aFechaLocalISO(fechaObj) {\n    const offsetMs = fechaObj.getTimezoneOffset() * 60 * 1000;\n    const fechaLocal = new Date(fechaObj.getTime() - offsetMs);\n    return fechaLocal.toISOString().slice(0, 19); \n}\n\nlet datosNuevos = {};\ntry {\n    datosNuevos = $(nombreNodoIA).first().json;\n} catch (e) {\n    return { json: { accion: \"nada\", mensaje: \"❌ Error: No se ha encontrado el nodo anterior.\" } };\n}\n\nif (eventos.length === 0 || !eventos[0].json.id) {\n    return { json: { accion: \"nada\", mensaje: `🤷‍♂️ No se ha encuentrado el evento \"${datosNuevos.q || 'ese'}\" para modificar.` } };\n}\n\nif (eventos.length > 1) {\n    const lista = eventos.slice(0, 5).map(e => `• ${e.json.summary}`).join(\"\\n\");\n    return { json: { accion: \"preguntar\", mensaje: `⚠️ Hay varios eventos:\\n${lista}\\nSé más específico.` } };\n}\n\nconst original = eventos[0].json;\n\nlet finalReminder = 15; \nif (original.reminders && original.reminders.overrides && original.reminders.overrides.length > 0) {\n    finalReminder = original.reminders.overrides[0].minutes;\n}\n\nif (datosNuevos.newReminder !== null && datosNuevos.newReminder !== undefined) {\n    finalReminder = datosNuevos.newReminder;\n}\n\nlet finalStartObj = new Date(original.start.dateTime || original.start.date);\nlet finalEndObj = new Date(original.end.dateTime || original.end.date);\n\nif (datosNuevos.newStart) {\n    const fechaViejaInicio = new Date(finalStartObj);\n    const fechaViejaFin = new Date(finalEndObj);\n    const duracion = fechaViejaFin.getTime() - fechaViejaInicio.getTime();\n    \n    finalStartObj = new Date(datosNuevos.newStart);\n    \n    if (!datosNuevos.newEnd) {\n        finalEndObj = new Date(finalStartObj.getTime() + duracion);\n    } else {\n        finalEndObj = new Date(datosNuevos.newEnd);\n    }\n}\n\nconst finalStartString = aFechaLocalISO(finalStartObj);\nconst finalEndString = aFechaLocalISO(finalEndObj);\n\nconst finalSummary = datosNuevos.newSummary || original.summary;\nconst finalDescription = datosNuevos.newDescription || original.description || \"\";\n\nreturn {\n    json: {\n        accion: \"modificar\",\n        id: original.id,\n        updateSummary: finalSummary,\n        updateDescription: finalDescription,\n        updateStart: finalStartString,\n        updateEnd: finalEndString,\n        updateReminder: finalReminder,\n        mensaje: `✅ Actualizado el evento: \"${finalSummary}\".\\n📅 Nueva hora: ${finalStartString.slice(11,16)} - ${finalEndString.slice(11,16)}\\n🔔 Aviso: ${finalReminder} min.`\n    }\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2000,
-        304
-      ],
-      "id": "<NODE_ID>",
-      "name": "Mensaje Formateado Modificar"
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
-        "text": "={{ $('Mensaje Formateado Modificar').first().json.mensaje }}",
-        "additionalFields": {}
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2624,
-        368
+        240,
+        1024
       ],
       "id": "<NODE_ID>",
-      "name": "Evento Modificado",
+      "name": "Evento Eliminado Botón",
       "webhookId": "<WEBHOOK_ID>",
       "credentials": {
         "telegramApi": {
@@ -978,166 +2178,165 @@
     },
     {
       "parameters": {
-        "jsCode": "const text = $input.first().json.text;\nconst firstBrace = text.indexOf('{');\nconst lastBrace = text.lastIndexOf('}');\n\nif (firstBrace !== -1 && lastBrace !== -1) {\n    const jsonString = text.substring(firstBrace, lastBrace + 1);\n    try {\n        const data = JSON.parse(jsonString);\n        \n        let finalStart = data.start;\n        let finalEnd = data.end;\n\n        if (data.allday === true) {\n            finalStart = data.start.split('T')[0];\n            \n            const startDateObj = new Date(finalStart);\n            const nextDay = new Date(startDateObj);\n            nextDay.setDate(startDateObj.getDate() + 1);\n            finalEnd = nextDay.toISOString().split('T')[0];\n        }\n\n        return {\n            json: {\n                summary: data.summary,\n                description: data.description,\n                start: finalStart,\n                end: finalEnd,\n                allday: data.allday || false, \n                reminder: data.reminder !== undefined ? data.reminder : null\n            }\n        };\n    } catch (e) { return { json: { error: \"Error JSON\" } }; }\n}\nreturn { json: {} };"
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "={{ $json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
       "position": [
-        1648,
-        -544
+        832,
+        832
       ],
       "id": "<NODE_ID>",
-      "name": "Datos Modelo Crear"
+      "name": "Evento Modificado Botón",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "Telegram account"
+        }
+      }
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "modificar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "03c7a1ee-77f0-459a-9e79-746824e38e27"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "modificar_evento"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c577a4a0-41cc-4f23-9ddc-7fd3fd19e98c",
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "nada",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "avisar"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "a3c9131c-b04a-438d-a177-edd6cef823af",
-                    "leftValue": "={{ $json.accion }}",
-                    "rightValue": "preguntar",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "preguntar"
-            }
-          ]
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
         },
+        "builtInTools": {},
         "options": {}
       },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
       "position": [
-        2192,
-        288
+        1184,
+        -448
       ],
       "id": "<NODE_ID>",
-      "name": "Switch modificar"
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        -48
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        864
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1392,
+        1264
+      ],
+      "id": "<NODE_ID>",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "MDUxMjg0ODE5NDk2MTM5NDYyMjg6MDow",
+        "limit": 10,
+        "additionalFields": {
+          "showCompleted": false
+        }
+      },
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        1392
+      ],
+      "id": "<NODE_ID>",
+      "name": "Tareas restantes",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "<CREDENTIAL_ID>",
+          "name": "Google Tasks account"
+        }
+      }
     }
   ],
   "pinData": {},
   "connections": {
-    "Telegram Trigger": {
-      "main": [
-        [
-          {
-            "node": "Clasificador",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch": {
-      "main": [
-        [
-          {
-            "node": "IA Crear Eventos",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "IA Mostrar Eventos",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "IA Eliminar",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "IA Modificar Evento",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "IA Clima",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Crear evento": {
       "main": [
         [
           {
-            "node": "Evento creado",
+            "node": "Confirmación Creación",
             "type": "main",
             "index": 0
           }
@@ -1148,51 +2347,7 @@
       "main": [
         [
           {
-            "node": "Mensaje Formateado Eventos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Mensaje Formateado Clima",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mensaje Formateado Eventos": {
-      "main": [
-        [
-          {
-            "node": "Lista eventos",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mensaje Formateado Clima": {
-      "main": [
-        [
-          {
-            "node": "Clima",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clasificador": {
-      "main": [
-        [
-          {
-            "node": "Switch",
+            "node": "Resumen Agenda",
             "type": "main",
             "index": 0
           }
@@ -1210,56 +2365,12 @@
         ]
       ]
     },
-    "Gemini 2.5 Flash (1)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Clasificador",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Flash (2)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "IA Crear Eventos",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Flash (3)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "IA Mostrar Eventos",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Datos Clima": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Consulta OpenWeather",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Flash (4)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "IA Eliminar",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -1270,17 +2381,6 @@
         [
           {
             "node": "Datos Clima",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IA Crear Eventos": {
-      "main": [
-        [
-          {
-            "node": "Datos Modelo Crear",
             "type": "main",
             "index": 0
           }
@@ -1331,14 +2431,14 @@
         ],
         [
           {
-            "node": "Mensaje aviso",
+            "node": "Confirmación Borrado",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Mensaje aviso",
+            "node": "Aviso Múltiples Eventos",
             "type": "main",
             "index": 0
           }
@@ -1349,30 +2449,8 @@
       "main": [
         [
           {
-            "node": "Evento eliminado",
+            "node": "Confirmación Borrado",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Flash (6)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "IA Clima",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Flash (5)": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "IA Modificar Evento",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -1411,22 +2489,11 @@
         ]
       ]
     },
-    "Get many events": {
-      "main": [
-        [
-          {
-            "node": "Mensaje Formateado Modificar",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Datos modificar evento": {
       "main": [
         [
           {
-            "node": "Get many events",
+            "node": "Ver eventos para modificar",
             "type": "main",
             "index": 0
           }
@@ -1437,7 +2504,7 @@
       "main": [
         [
           {
-            "node": "Evento Modificado",
+            "node": "Resumen Cambio",
             "type": "main",
             "index": 0
           }
@@ -1455,17 +2522,6 @@
         ]
       ]
     },
-    "Datos Modelo Crear": {
-      "main": [
-        [
-          {
-            "node": "Crear evento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch modificar": {
       "main": [
         [
@@ -1477,14 +2533,554 @@
         ],
         [
           {
-            "node": "Evento Modificado",
+            "node": "Resumen Cambio",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
+            "node": "Pregunta Modificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe audio": {
+      "main": [
+        [
+          {
+            "node": "Memoria Texto Original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Mensaje/Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analizador de Intenciones",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Eliminar",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Lector Agenda del Día",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Tareas",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Tareas": {
+      "main": [
+        [
+          {
+            "node": "Datos Tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria Texto Original": {
+      "main": [
+        [
+          {
+            "node": "Analizador de Intenciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizador de Texto": {
+      "main": [
+        [
+          {
+            "node": "Memoria Texto Original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizador de Intenciones": {
+      "main": [
+        [
+          {
+            "node": "Enrutador de Acciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Crear Eventos": {
+      "main": [
+        [
+          {
+            "node": "Datos Modelo Crear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos Modelo Crear": {
+      "main": [
+        [
+          {
+            "node": "Crear evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmación Creación": {
+      "main": [
+        [
+          {
+            "node": "Evento creado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resumen Agenda": {
+      "main": [
+        [
+          {
+            "node": "Lista eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Saludo Matutino": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmación Tarea": {
+      "main": [
+        [
+          {
+            "node": "Tarea creada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Información Clima": {
+      "main": [
+        [
+          {
+            "node": "Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lector Agenda del Día": {
+      "main": [
+        [
+          {
+            "node": "Tareas restantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Información Cambio Evento": {
+      "main": [
+        [
+          {
+            "node": "Modificar Evento Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Voz/Texto": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalizador de Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrutador de Acciones": {
+      "main": [
+        [
+          {
+            "node": "IA Crear Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Mostrar Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Eliminar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Modificar Evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Clima",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Tareas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje/Botón": {
+      "main": [
+        [
+          {
+            "node": "If Voz/Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Selector Acción Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selector Acción Botón": {
+      "main": [
+        [
+          {
+            "node": "Extractor ID Evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Eliminar Evento Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extractor ID Evento": {
+      "main": [
+        [
+          {
+            "node": "Información Cambio Evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos Tarea": {
+      "main": [
+        [
+          {
+            "node": "Crear tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta OpenWeather": {
+      "main": [
+        [
+          {
+            "node": "Información Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clima Madrid": {
+      "main": [
+        [
+          {
+            "node": "Saludo Matutino",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmación Borrado": {
+      "main": [
+        [
+          {
+            "node": "Evento Eliminado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso Múltiples Eventos": {
+      "main": [
+        [
+          {
+            "node": "Enviar Botones Eliminar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmación Botón Borrado": {
+      "main": [
+        [
+          {
+            "node": "Evento Eliminado Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pregunta Modificación": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Fila Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resumen Cambio": {
+      "main": [
+        [
+          {
             "node": "Evento Modificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Éxito Actualización": {
+      "main": [
+        [
+          {
+            "node": "Evento Modificado Botón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Fila Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Enviar Botones Modificar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eliminar Evento Botón": {
+      "main": [
+        [
+          {
+            "node": "Confirmación Botón Borrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modificar Evento Botón": {
+      "main": [
+        [
+          {
+            "node": "Éxito Actualización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ver eventos para modificar": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Formateado Modificar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear tarea": {
+      "main": [
+        [
+          {
+            "node": "Confirmación Tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Crear Eventos",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Mostrar Eventos",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Modificar Evento",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA Clima",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tareas restantes": {
+      "main": [
+        [
+          {
+            "node": "Clima Madrid",
             "type": "main",
             "index": 0
           }
@@ -1495,6 +3091,7 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
+    "binaryMode": "separate",
     "timezone": "Europe/Madrid",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
