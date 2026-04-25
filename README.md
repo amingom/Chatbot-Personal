@@ -81,4 +81,15 @@ El flujo se compone de los siguientes elementos clave:
 #### ☀️ Muestra de datos del clima
 <img src="./images/Clima.jpg" alt="Clima" width="300">
 
+#### 🎙️ Interacción por Voz
+<img src="./images/Voz.jpg" alt="Mensaje de voz" width="300">
+
+#### 📝 Gestión de Google Tasks
+<img src="./images/Tareas.jpg" alt="Tareas" width="300">
+
+#### ☀️ Resumen Matutino Proactivo
+<img src="./images/Mensaje_matutino.jpg" alt="Mensaje matutino" width="300">
+
+#### 🌍 Interacción Multilingüe
+<img src="./images/Mensaje_idioma.jpg" alt="Mensaje idioma" width="300">
 ---
