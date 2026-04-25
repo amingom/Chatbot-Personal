@@ -1,8 +1,8 @@
-# Chronos: Asistente personal inteligente
+# Chronos: Asistente personal inteligente Chronos: Evolución de un asistente personal inteligente con integración de servicios en la nube, procesamiento de voz y gestión proactiva de tareas
 
-## 🧠 Chatbot Inteligente con n8n, Telegram, Google Calendar y Gemini AI
+## 🧠 Chatbot Multilingüe con n8n, Telegram, IA Generativa y Google Calendar
 
-Este proyecto consiste en el desarrollo de un **chatbot automatizado**, utilizando **Inteligencia Artificial (Google Gemini)** para comprender el lenguaje natural. Está implementado en **n8n**, permitiendo interactuar con el usuario a través de **Telegram** de una forma mucho más fluida y humana.
+Este proyecto consiste en el desarrollo de un **asistente de productividad** que utiliza Inteligencia Artificial para la comprensión profunda del lenguaje natural. Implementado en **n8n**, permite una interacción humana, fluida y multilingüe a través de **Telegram**, integrando capacidades de gestión de agenda, tareas, procesamiento de voz y notificaciones proactivas.
 
 El bot gestiona eventos en **Google Calendar** (crear, ver, modificar y eliminar) y consulta información meteorológica mediante la **API de OpenWeather**, interpretando las peticiones del usuario.
 
@@ -16,62 +16,44 @@ El bot gestiona eventos en **Google Calendar** (crear, ver, modificar y eliminar
 
 El flujo se compone de los siguientes elementos clave:
 
-1. **Telegram Trigger**  
-   Recibe cualquier mensaje de texto del usuario.
-
-2. **Clasificador con IA (Google Gemini)**  
-   Un modelo de lenguaje analiza el mensaje y determina la intención del usuario entre:
-   - **Crear**: Agendar nuevos eventos.
-   - **Ver**: Consultar la agenda.
-   - **Eliminar**: Borrar eventos existentes.
-   - **Modificar**: Cambiar detalles de un evento.
-   - **Clima**: Consultar el tiempo.
-
-3. **Procesamiento Inteligente (Nodos IA)**  
-   Dependiendo de la intención, otros modelos de IA extraen los datos necesarios:
-   - *Fechas y horas*.
-   - *Resúmenes y descripciones*.
-   - *Ciudades* para el clima.
-
-4. **Integración con Google Calendar**  
-   - **Crear evento:** Añade tareas con título, fecha, hora y recordatorios.
-   - **Ver eventos:** Busca eventos en rangos de tiempo.
-   - **Eliminar evento:** Busca y elimina eventos por nombre.
-   - **Modificar evento:** Permite cambiar hora, fecha o título de eventos existentes.
-
-5. **Consulta del clima**  
-   Detecta automáticamente la ciudad mencionada o muestra el clima de la ciudad por defecto, que es Madrid, y consulta la API de OpenWeather.
-
-6. **Respuestas Naturales**  
-   El bot confirma las acciones o responde a las consultas con mensajes formateados en Markdown/HTML.
+1. **Entrada Multicanal (Telegram Trigger)**: Recibe mensajes de texto o archivos de voz enviados por el usuario.
+2. **Capa de Transcripción (OpenAI Whisper)**: Si la entrada es un audio, el sistema descarga el archivo y utiliza **Whisper** para convertir el mensaje en texto con alta precisión.
+3. **Analizador de Intenciones (GPT-4o-mini)**: Un modelo de NLP clasifica la petición en categorías: *Crear, Ver, Eliminar, Modificar, Clima o Tarea*.
+4. **Procesamiento Inteligente de Datos**: Nodos de IA extraen fechas, horas y descripciones. 
+5. **Integración con Google Workspace**:
+   - **Google Calendar**: Gestión de eventos.
+   - **Google Tasks**: Registro de tareas.
+6. **Sistema Proactivo (Schedule Trigger)**: Un flujo independiente se activa a una hora programada para enviar un resumen matutino con la agenda, las tareas y el clima actual.
+7. **Respuestas Naturales y Multilingües**: El bot responde en el idioma original del usuario, con mensajes dinámicos y formateados.
 
 ---
 
 ### 🚀 Funcionalidades implementadas
 
-- **Procesamiento de Lenguaje Natural (NLP):** Entiende frases como "Cena con Paco el viernes a las 9" sin usar comandos como `/crear`.
-- **Gestión Completa de Calendario:**
-  - Creación inteligente de eventos.
-  - Consulta de agenda.
-  - Modificación de eventos existentes.
-  - Eliminación de eventos.
-- **Consulta Meteorológica Inteligente:** Detecta la ciudad dentro de la frase.
-- **Interacción Fluida:** Respuestas contextuales y manejo de errores.
+- **Gestión de Voz y Texto**: Procesamiento dual mediante Whisper y GPT.
+- **Soporte Multilingüe Dinámico**: El bot detecta y responde en el idioma del usuario automáticamente.
+- **Gestión Completa de Calendario**: Operaciones CRUD inteligentes.
+- **Gestión de Tareas**: Inserción rápida en Google Tasks.
+- **Notificaciones Proactivas**: Resumen diario automatizado para comenzar el día.
 
 ---
 
 ### 🛠️ Tecnologías utilizadas
 
 - [**n8n**][n8nurl] – Orquestador de flujos de trabajo.
-- [**Google Gemini API**][geminiurl] – Motor de Inteligencia Artificial para comprensión del lenguaje.
+- [**OpenAI GPT-4o-mini**][openaiurl] – Motor de IA para clasificación de intenciones, extracción de datos y redacción de respuestas.
+- [**OpenAI Whisper**][whisperurl] – Modelo de inteligencia artificial para transcripción de audio.
+- [**Google Tasks API**][googletasksurl] – Gestión de listas de tareas pendientes.
 - [**Telegram Bot**][telegramboturl] – Interfaz de usuario.
 - [**Google Calendar API**][googlecalendarurl] – Gestión de agenda. 
 - [**OpenWeather API**][openweatherurl] – Datos meteorológicos.
 
 [n8nurl]: https://n8n.io/
-[geminiurl]: https://aistudio.google.com/
+[openaiurl]: https://openai.com/
+[whisperurl]: https://openai.com/index/whisper/
+[googletasksurl]: https://developers.google.com/tasks
 [telegramboturl]: https://core.telegram.org/bots
-[googlecalendarurl]: https://developers.google.com/workspace/calendar/api/guides/overview?hl=es_419
+[googlecalendarurl]: https://developers.google.com/workspace/calendar
 [openweatherurl]: https://openweathermap.org/api
 
 ---
